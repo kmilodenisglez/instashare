@@ -12,3 +12,4 @@ python-jose[cryptography]
 celery
 redis
 starlette
+python-dotenv
