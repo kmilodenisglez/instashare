@@ -46,7 +46,13 @@ Use GET `/api/v1/files` to see your uploaded files.
 #### d. Rename a File
 Use PATCH `/api/v1/files/{file_id}` with a valid file ID and a new name as a query parameter.
 
-#### e. Get File Info
+#### e. Download File
+
+- **GET `/api/v1/files/{file_id}/download`**
+  - Authenticated users can download their files directly from Pinata/IPFS.
+  - The endpoint streams the file from the Pinata public gateway and returns it with the original filename.
+
+#### f. Get File Info
 Use GET /api/v1/files/{file_id} with a valid file ID.
 
 ### 4. Testing with HTTP Clients
