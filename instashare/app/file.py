@@ -5,6 +5,9 @@ from app.database import get_db
 from app.schemas import FileOut
 from typing import List
 from datetime import datetime
+from app.pinata import upload_file_to_ipfs
+import os
+import shutil
 
 router = APIRouter()
 
@@ -24,13 +27,23 @@ async def upload_file(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    contents = await uploaded_file.read()
-    # Placeholder: Save file to Pinata, get ipfs_hash
-    ipfs_hash = 'placeholder_ipfs_hash'
+    OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./output")
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    file_path = os.path.join(OUTPUT_DIR, uploaded_file.filename)
+    # Save uploaded file to disk
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(uploaded_file.file, buffer)
+    # Upload file to Pinata
+    ipfs_hash = upload_file_to_ipfs(file_path)
+    # Optionally, remove the file after upload
+    try:
+        os.remove(file_path)
+    except Exception:
+        pass
     file_record = FileModel(
         user_id=user.id,
         filename=uploaded_file.filename,
-        size=len(contents),
+        size=os.path.getsize(file_path) if os.path.exists(file_path) else None,
         status='pending',
         ipfs_hash=ipfs_hash,
         created_at=datetime.utcnow(),
