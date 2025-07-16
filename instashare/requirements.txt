@@ -15,3 +15,4 @@ redis
 starlette
 python-dotenv
 itsdangerous
+requests
