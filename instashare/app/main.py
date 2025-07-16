@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth import router as auth_router
+from app.file import router as file_router
 from dotenv import load_dotenv
 import os
 
@@ -35,6 +36,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/auth")
+app.include_router(file_router, prefix="/api/v1")
 
 @app.get("/api/v1")
 def read_root():
