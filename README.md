@@ -26,9 +26,19 @@ You’ll see all endpoints, including authentication and file management.
 2. Complete Google login.
 3. Your session cookie will be set in your browser.
 
-#### b. Upload a File
-- In the /docs UI, use the POST /api/v1/files/upload endpoint.
-- Click “Try it out”, upload a file, and execute.
+#### b. **Upload a File**
+
+- Go to [http://localhost:8000/docs](http://localhost:8000/docs)
+- Find `POST /api/v1/files/upload`
+- Click “Try it out”, select a file, and execute.
+
+---
+
+##### b.1. **Check the Response**
+
+- You should see a response with an `ipfs_hash` field.
+- This hash should also appear in your Pinata dashboard.
+
 
 #### c. List Files
 Use GET `/api/v1/files` to see your uploaded files.
@@ -48,3 +58,5 @@ You can also use tools like:
 ### 5. Troubleshooting
 - If you get “Not authenticated”, make sure you’re logged in via Google and your browser sends the session cookie.
 - If you get “File not found”, check the file ID and that you’re logged in as the correct user.
+- If you get an error, check your FastAPI logs for details.
+- Make sure your Pinata API credentials are correct and active.
