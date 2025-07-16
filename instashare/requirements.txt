@@ -13,3 +13,4 @@ celery
 redis
 starlette
 python-dotenv
+itsdangerous
