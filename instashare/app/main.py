@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from app.auth import router as auth_router
 
 app = FastAPI()
+
+# session middleware
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"))
 
 # CORS for development
 app.add_middleware(
