@@ -9,3 +9,4 @@ __pycache__/
 .DS_Store
 /.venv/
 /instashare/output/*
+!/instashare/output/.gitkeep
