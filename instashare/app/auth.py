@@ -3,6 +3,9 @@ from fastapi.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
 import os
+from sqlalchemy.orm import Session
+from app.models import User
+from app.database import get_db
 
 # load environment variables from .env
 load_dotenv()
@@ -27,20 +30,24 @@ async def login(request: Request):
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @router.get('/callback/google')
-async def auth_callback(request: Request):
+async def auth_callback(request: Request, db: Session = Depends(get_db)):
     token = await oauth.google.authorize_access_token(request)
     user_info = token.get('userinfo')
 
     if not user_info:
         raise HTTPException(400, "Could not get userinfo")
-    
-    # Save the user to the session
-    request.session['user'] = dict(user_info) # Convert to dict if necessary
 
-    # Here you should check if the user is already in the database, and if not, add them.
-    # But for now, we're only returning the user's information.
+    # Check if user exists
+    user = db.query(User).filter(User.email == user_info['email']).first()
+    if not user:
+        user = User(email=user_info['email'], name=user_info.get('name'))
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    request.session['user'] = {'id': user.id, 'email': user.email, 'name': user.name}
 
     return {
         "message": "Welcome",
-        "user": user_info
+        "user": request.session['user']
     }

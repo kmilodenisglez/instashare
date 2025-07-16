@@ -7,6 +7,7 @@ sqlalchemy
 alembic
 asyncpg
 pydantic
+pydantic_settings
 passlib[bcrypt]
 python-jose[cryptography]
 celery
