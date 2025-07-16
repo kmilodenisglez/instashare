@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
+from dotenv import load_dotenv
 import os
+
+# load environment variables from .env
+load_dotenv()
 
 router = APIRouter()
 
@@ -19,17 +23,24 @@ oauth.register(
 @router.get('/login')
 async def login(request: Request):
     redirect_uri = request.url_for('auth_callback')
+    print("REDIRECT URI:", redirect_uri)
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
-@router.get('/auth/callback')
+@router.get('/callback/google')
 async def auth_callback(request: Request):
     token = await oauth.google.authorize_access_token(request)
-    user_info = await oauth.google.parse_id_token(request, token)
+    user_info = token.get('userinfo')
 
+    if not user_info:
+        raise HTTPException(400, "Could not get userinfo")
+    
     # Save the user to the session
-    request.session['user_info'] = user_info
+    request.session['user'] = dict(user_info) # Convert to dict if necessary
 
     # Here you should check if the user is already in the database, and if not, add them.
     # But for now, we're only returning the user's information.
 
-    return user_info
+    return {
+        "message": "Welcome",
+        "user": user_info
+    }
