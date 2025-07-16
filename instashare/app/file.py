@@ -8,6 +8,8 @@ from datetime import datetime
 from app.pinata import upload_file_to_ipfs
 import os
 import shutil
+from fastapi.responses import StreamingResponse
+import httpx
 
 router = APIRouter()
 
@@ -88,4 +90,25 @@ async def get_file(
     file = db.query(FileModel).filter(FileModel.id == file_id, FileModel.user_id == user.id).first()
     if not file:
         raise HTTPException(404, "File not found")
-    return file 
+    return file
+
+@router.get('/files/{file_id}/download')
+async def download_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    file = db.query(FileModel).filter(FileModel.id == file_id, FileModel.user_id == user.id).first()
+    if not file or not file.ipfs_hash:
+        raise HTTPException(404, "File not found or not uploaded to IPFS")
+    ipfs_url = f"https://gateway.pinata.cloud/ipfs/{file.ipfs_hash}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(ipfs_url, timeout=60.0)
+        response.raise_for_status()
+        return StreamingResponse(
+            response.aiter_bytes(),
+            media_type='application/octet-stream',
+            headers={
+                'Content-Disposition': f'attachment; filename="{file.filename}"'
+            }
+        ) 
