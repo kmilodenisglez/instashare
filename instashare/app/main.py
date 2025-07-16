@@ -17,7 +17,7 @@ app = FastAPI(
     description='Instashare DFS API',
     contact={
         'name': 'Instashare',
-        'url': '',
+        # 'url': '',
         'email': 'kmilo.denis.glez@gmail.com'
     }
 )
