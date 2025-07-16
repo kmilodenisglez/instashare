@@ -26,6 +26,6 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/auth")
 
-@app.get("/")
+@app.get("/api/v1")
 def read_root():
     return {"message": "Welcome to Instashare DFS API"} 
