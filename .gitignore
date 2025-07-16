@@ -1,0 +1,10 @@
+*.pem
+*.tar.gz
+__pycache__/
+*.pyc
+
+.env
+
+.idea/
+.DS_Store
+/.venv/
