@@ -8,4 +8,4 @@ __pycache__/
 .idea/
 .DS_Store
 /.venv/
-/output/*
+/instashare/output/*
