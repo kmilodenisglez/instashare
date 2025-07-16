@@ -25,6 +25,11 @@ async def login(request: Request):
 async def auth_callback(request: Request):
     token = await oauth.google.authorize_access_token(request)
     user_info = await oauth.google.parse_id_token(request, token)
-    # TODO: Add user to DB if not exists, create session/cookie
-    # For now, just return user info
-    return user_info 
+
+    # Save the user to the session
+    request.session['user_info'] = user_info
+
+    # Here you should check if the user is already in the database, and if not, add them.
+    # But for now, we're only returning the user's information.
+
+    return user_info
