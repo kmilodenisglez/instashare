@@ -10,4 +10,5 @@ pydantic
 passlib[bcrypt]
 python-jose[cryptography]
 celery
-redis 
+redis
+starlette
