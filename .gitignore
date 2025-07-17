@@ -10,3 +10,10 @@ __pycache__/
 /.venv/
 /instashare/output/*
 !/instashare/output/.gitkeep
+
+# Celery stuff:
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+celerybeat.pid

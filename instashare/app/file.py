@@ -10,6 +10,7 @@ import os
 import shutil
 from fastapi.responses import StreamingResponse
 import httpx
+from app.tasks import process_file_zip
 
 router = APIRouter()
 
@@ -54,7 +55,8 @@ async def upload_file(
     db.add(file_record)
     db.commit()
     db.refresh(file_record)
-    # TODO: Trigger async compression job
+    # Trigger async ZIP processing
+    process_file_zip.delay(file_record.id)
     return file_record
 
 @router.get('/files', response_model=List[FileOut])
@@ -110,5 +112,26 @@ async def download_file(
             media_type='application/octet-stream',
             headers={
                 'Content-Disposition': f'attachment; filename="{file.filename}"'
+            }
+        )
+
+@router.get('/files/{file_id}/download_zip')
+async def download_zip_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    file = db.query(FileModel).filter(FileModel.id == file_id, FileModel.user_id == user.id).first()
+    if not file or not file.zip_ipfs_hash:
+        raise HTTPException(404, "ZIP file not found or not ready yet")
+    ipfs_url = f"https://gateway.pinata.cloud/ipfs/{file.zip_ipfs_hash}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(ipfs_url, timeout=60.0)
+        response.raise_for_status()
+        return StreamingResponse(
+            response.aiter_bytes(),
+            media_type='application/zip',
+            headers={
+                'Content-Disposition': f'attachment; filename="{file.filename}.zip"'
             }
         ) 
