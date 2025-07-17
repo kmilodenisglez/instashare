@@ -1,4 +1,4 @@
-fastapi[standard]
+fastapi
 uvicorn[standard]
 authlib
 httpx
@@ -7,23 +7,12 @@ sqlalchemy
 alembic
 asyncpg
 pydantic
-pydantic_settings
 passlib[bcrypt]
 python-jose[cryptography]
 celery[redis]
 redis
-starlette
-python-dotenv
-itsdangerous
 requests
-
-# Testing dependencies
-pytest
-pytest-asyncio
-pytest-mock
-pytest-cov
-pytest-xdist
-httpx
-fakeredis
-factory-boy
-freezegun
+black
+isort
+flake8
+mypy

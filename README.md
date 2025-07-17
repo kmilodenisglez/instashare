@@ -169,3 +169,38 @@ SELECT * FROM users;
 - Download original or ZIP file via API
 
 ---
+
+---
+
+## **What's Included**
+
+- **black**: Code formatter
+- **isort**: Import sorter
+- **flake8**: Linting for code style and errors
+- **mypy**: Static type checking
+
+### **Config files added:**
+- `.flake8` (for flake8 settings)
+- `pyproject.toml` (for black and isort settings)
+
+---
+
+## **How to Use**
+
+### **Install all tools**
+```bash
+pip install -r requirements.txt
+```
+
+### **Run linters and formatters**
+```bash
+# Check code style
+flake8 .
+
+# Check type hints
+mypy api/ tests/
+
+# Format code
+black .
+isort .
+```
