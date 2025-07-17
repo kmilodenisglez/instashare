@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { api } from '../lib/api';
 
 export default function FileList() {
     const [files, setFiles] = useState([]);
@@ -10,11 +11,12 @@ export default function FileList() {
 
     const fetchFiles = async () => {
         setLoading(true);
-        const res = await fetch('http://localhost:8000/api/v1/files', {
-            credentials: 'include',
-        });
-        if (res.ok) {
-            setFiles(await res.json());
+        try {
+            const response = await api.getFiles();
+            const data = await response.json();
+            setFiles(data);
+        } catch (error) {
+            console.error('Failed to fetch files:', error);
         }
         setLoading(false);
     };
@@ -24,14 +26,13 @@ export default function FileList() {
     }, []);
 
     const handleRename = async (fileId) => {
-        const res = await fetch(`http://localhost:8000/api/v1/files/${fileId}?new_name=${encodeURIComponent(newName)}`, {
-            method: 'PATCH',
-            credentials: 'include',
-        });
-        if (res.ok) {
+        try {
+            await api.renameFile(fileId, newName);
             setRenameId(null);
             setNewName('');
             fetchFiles();
+        } catch (error) {
+            console.error('Failed to rename file:', error);
         }
     };
 
