@@ -1,12 +1,8 @@
 'use client';
 
-import { getNetlifyContext } from 'utils';
-
 import FileUpload from "../components/FileUpload";
 import FileList from "../components/FileList";
 import {useState} from "react";
-
-const ctx = getNetlifyContext();
 
 export default function Page() {
     const [refresh, setRefresh] = useState(false);
