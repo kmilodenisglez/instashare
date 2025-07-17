@@ -25,10 +25,11 @@ oauth.register(
 
 
 @router.get("/login")
-async def login(request: Request):
-    redirect_uri = request.url_for("auth_callback")
-    print("REDIRECT URI:", redirect_uri)
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+async def login(request: Request, redirect_uri: str = "http://localhost:3000/"):
+    # Save redirect_uri in session
+    request.session["redirect_uri"] = redirect_uri
+    redirect_uri_backend = request.url_for("auth_callback")
+    return await oauth.google.authorize_redirect(request, redirect_uri_backend)
 
 
 @router.get("/callback/google")
@@ -49,7 +50,9 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
 
     request.session["user"] = {"id": user.id, "email": user.email, "name": user.name}
 
-    return {"message": "Welcome", "user": request.session["user"]}
+    # Redirect back to frontend
+    redirect_uri = request.session.get("redirect_uri", "http://localhost:3000/")
+    return RedirectResponse(url=redirect_uri)
 
 
 @router.post("/test-login")
