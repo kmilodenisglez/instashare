@@ -8,6 +8,10 @@ PINATA_FILE_API_ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS"
 PINATA_API_KEY = os.getenv("PINATA_API_KEY")
 PINATA_API_SECRET = os.getenv("PINATA_API_SECRET")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./output")
+# Debug: Check if credentials are loaded
+print(f"Pinata API Key loaded: {'Yes' if PINATA_API_KEY else 'No'}")
+if PINATA_API_KEY:
+    print(f"API Key starts with: {PINATA_API_KEY[:8]}...")
 
 def upload_file_to_ipfs(file_path=None):
     """
