@@ -10,7 +10,7 @@ pydantic
 pydantic_settings
 passlib[bcrypt]
 python-jose[cryptography]
-celery
+celery[redis]
 redis
 starlette
 python-dotenv
