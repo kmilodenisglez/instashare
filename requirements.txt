@@ -1,4 +1,4 @@
-fastapi
+fastapi[standard]
 uvicorn[standard]
 authlib
 httpx
@@ -7,10 +7,14 @@ sqlalchemy
 alembic
 asyncpg
 pydantic
+pydantic_settings
 passlib[bcrypt]
 python-jose[cryptography]
 celery[redis]
 redis
+starlette
+python-dotenv
+itsdangerous
 requests
 black
 isort
