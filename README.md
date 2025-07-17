@@ -1,30 +1,39 @@
+# Instashare Backend
+
+This project is a distributed file system backend built with FastAPI, Celery, and Redis. It supports Google OAuth authentication, file upload to Pinata (IPFS), asynchronous ZIP processing, and file management endpoints.
+
+---
+
+## Project Features
+- User authentication via Google OAuth
+- File upload and storage on Pinata (IPFS)
+- Asynchronous ZIP compression using Celery
+- Download original or ZIP-compressed files
+- File management: list, rename, and get file info
+
+---
+
+## Local Development Setup
+
+### 1. Create and Activate Virtual Environment
+```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install --no-cache-dir -r requirements.txt
-deactivate
-
-uvicorn app.main:app --reload
-
-# How It Works:
-User uploads file → File saved to Pinata → DB record created → Celery task queued
-Celery worker picks up task → Downloads file → Creates ZIP → Uploads ZIP → Updates DB
-User can download original or ZIP version
-
-## How to test your complete backend locally with Celery + Redis 
-
-1. Install Dependencies
-```bash
-pip install -r requirements.txt
 ```
 
-2. Set Up Redis Locally with Docker (Recommended)
+### 2. Install Dependencies
+```bash
+pip install --no-cache-dir -r requirements.txt
+```
+
+### 3. Set Up Redis Locally (Recommended: Docker)
 ```bash
 docker run -d -p 6379:6379 redis:alpine
 ```
 
-3. Set Environment Variables
-Create a .env file in your project root:
-```bash
+### 4. Set Environment Variables
+Create a `.env` file in your project root:
+```env
 # Pinata Configuration
 PINATA_API_KEY=your_pinata_key
 PINATA_API_SECRET=your_pinata_secret
@@ -36,108 +45,127 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 # Redis (for local development)
 REDIS_URL=redis://localhost:6379
 ```
-4. Start the Services
-  Terminal 1: FastAPI Server
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-  Terminal 2: Celery Worker
-```bash
-celery -A app.celery_app worker --loglevel=info
-```
-
-  Terminal 3: Celery Beat (Optional - for periodic tasks)
-```bash
-celery -A app.celery_app beat --loglevel=info
-```
-5. Test the Complete Flow
-   A. Authentication
-   Visit: http://localhost:8000/auth/login
-   Complete Google OAuth
-   You should be redirected back with a session
-
-   B. File Upload & ZIP Processing
-   Go to: http://localhost:8000/docs
-   Use POST /api/v1/files/upload to upload a file
-   Check the response for ipfs_hash
-   Watch Terminal 2 (Celery worker) for processing logs
-   Check the file status in the database
-
-   C. File Management
-   Use GET /api/v1/files to list your files
-   Use GET /api/v1/files/{id}/download to download original
-   Use GET /api/v1/files/{id}/download_zip to download ZIP (after processing)
-6. Monitor Celery Tasks
-   Check Task Status
-```bash
-# In a new terminal
-celery -A app.services.celery_app inspect active
-celery -A app.services.celery_app inspect registered
-```
-
-## You can test your endpoints as they are:
-
-### 1. Start the FastAPI Server
-From your project root:
-```bash
-uvicorn app.main:app --reload
-```
-
-### 2. Open the Interactive API Docs
-Visit:
-http://localhost:8000/docs
-
-You’ll see all endpoints, including authentication and file management.
-
-### 3. Test the Flow
-#### a. Authenticate
-1. Go to /auth/login in your browser.
-2. Complete Google login.
-3. Your session cookie will be set in your browser.
-
-#### b. **Upload a File**
-
-- Go to [http://localhost:8000/docs](http://localhost:8000/docs)
-- Find `POST /api/v1/files/upload`
-- Click “Try it out”, select a file, and execute.
 
 ---
 
-##### b.1. **Check the Response**
+## Running the Services
 
-- You should see a response with an `ipfs_hash` field.
-- This hash should also appear in your Pinata dashboard.
+### Terminal 1: Start FastAPI Server
+```bash
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+```
 
+### Terminal 2: Start Celery Worker
+```bash
+celery -A api.celery_app worker --loglevel=info
+```
 
-#### c. List Files
-Use GET `/api/v1/files` to see your uploaded files.
+### Terminal 3: Start Celery Beat (Optional, for periodic tasks)
+```bash
+celery -A api.celery_app beat --loglevel=info
+```
 
-#### d. Rename a File
-Use PATCH `/api/v1/files/{file_id}` with a valid file ID and a new name as a query parameter.
+---
 
-#### e. Download File
+## How It Works
+1. User uploads file → File saved to Pinata → DB record created → Celery task queued
+2. Celery worker picks up task → Downloads file → Creates ZIP → Uploads ZIP → Updates DB
+3. User can download original or ZIP version
 
-- **GET `/api/v1/files/{file_id}/download`**
-  - Authenticated users can download their files directly from Pinata/IPFS.
-  - The endpoint streams the file from the Pinata public gateway and returns it with the original filename.
+---
 
-#### f. Get File Info
-Use GET /api/v1/files/{file_id} with a valid file ID.
+## API Usage & Testing
 
-### 4. Testing with HTTP Clients
+### 1. Open the Interactive API Docs
+Visit: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 2. Authentication
+- Go to `/auth/login` in your browser.
+- Complete Google login.
+- Your session cookie will be set in your browser.
+
+### 3. File Upload & ZIP Processing
+- Use `POST /api/v1/files/upload` to upload a file.
+- Check the response for `ipfs_hash`.
+- Watch the Celery worker terminal for processing logs.
+- Check the file status in the database.
+
+### 4. File Management
+- `GET /api/v1/files` — List your files
+- `PATCH /api/v1/files/{file_id}` — Rename a file
+- `GET /api/v1/files/{file_id}/download` — Download original file
+- `GET /api/v1/files/{file_id}/download_zip` — Download ZIP file (after processing)
+- `GET /api/v1/files/{file_id}` — Get file info
+
+### 5. Testing with HTTP Clients
 You can also use tools like:
 - curl
 - httpie
 - Postman (import cookies from your browser for session auth)
 
-### 5. Troubleshooting
+### 6. Troubleshooting
 - If you get “Not authenticated”, make sure you’re logged in via Google and your browser sends the session cookie.
 - If you get “File not found”, check the file ID and that you’re logged in as the correct user.
 - If you get an error, check your FastAPI logs for details.
 - Make sure your Pinata API credentials are correct and active.
 
-5.1 Celery Worker Not Starting
+#### Celery Worker Not Starting
 ```bash
-celery -A app.celery_app inspect ping
+celery -A api.celery_app inspect ping
 ```
+
+---
+
+## Running Tests
+
+### 1. Unit, Integration, and E2E Tests
+- Unit tests: test isolated functions/classes (no DB, no network)
+- Integration tests: test API endpoints and DB/service integration
+- E2E tests: simulate real user flows (require the FastAPI server to be running)
+
+### 2. How to Run All Tests
+From the project root, run:
+```bash
+PYTHONPATH=. pytest
+```
+
+**Note:**
+- For E2E and requests-based tests, you must have the FastAPI server running at `http://localhost:8000`.
+- For integration/unit tests using `TestClient`, the server is started automatically by the test client.
+
+### 3. Run Only a Specific Type of Test
+```bash
+pytest tests/unit/
+pytest tests/integration/
+pytest tests/e2e/
+```
+
+---
+
+## Monitoring Celery Tasks
+
+Check task status:
+```bash
+celery -A api.celery_app inspect active
+celery -A api.celery_app inspect registered
+```
+
+---
+
+## Database Inspection
+
+Check SQLite database:
+```bash
+sqlite3 instashare.db
+.tables
+SELECT * FROM files;
+SELECT * FROM users;
+```
+
+---
+
+## Project Flow Summary
+- Upload → Pinata → DB → Celery → ZIP → Pinata → DB
+- Download original or ZIP file via API
+
+---
