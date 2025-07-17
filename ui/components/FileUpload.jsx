@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import {api} from "../lib/api";
 
 export default function FileUpload({ onUploadSuccess }) {
     const [file, setFile] = useState(null);
@@ -20,11 +21,7 @@ export default function FileUpload({ onUploadSuccess }) {
         const formData = new FormData();
         formData.append('uploaded_file', file);
 
-        const res = await fetch('http://localhost:8000/api/v1/files/upload', {
-            method: 'POST',
-            credentials: 'include',
-            body: formData,
-        });
+        const res = await api.uploadFile(formData);
 
         if (res.ok) {
             setFile(null);
