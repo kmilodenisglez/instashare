@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {api} from "../lib/api";
 
 export default function UserInfo() {
     const [user, setUser] = useState(null);
@@ -9,9 +10,7 @@ export default function UserInfo() {
     // Fetch user info on mount
     useEffect(() => {
         async function fetchUser() {
-            const res = await fetch('http://localhost:8000/auth/me', {
-                credentials: 'include',
-            });
+            const res = await api.getUser();
             const data = await res.json();
             if (data.authenticated) {
                 setUser(data.user);
