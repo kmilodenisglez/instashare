@@ -5,7 +5,7 @@ export const API_CONFIG = {
         // Authentication
         AUTH_LOGIN: '/auth/login',
         AUTH_LOGOUT: '/auth/logout',
-        AUTH_USER: '/auth/user',
+        AUTH_USER: '/auth/me',
         
         // File operations
         FILES_LIST: '/api/v1/files/',
