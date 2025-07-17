@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {api} from "../lib/api";
 
 export default function AuthButton() {
     const [user, setUser] = useState(null);
@@ -9,7 +10,7 @@ export default function AuthButton() {
     // Fetch user info on mount
     useEffect(() => {
         async function fetchUser() {
-            const res = await fetch('http://localhost:8000/auth/me', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
                 credentials: 'include',
             });
             const data = await res.json();
@@ -24,17 +25,24 @@ export default function AuthButton() {
     }, []);
 
     const handleLogin = () => {
-        const redirectUri = encodeURIComponent('http://localhost:3000/');
-        window.location.href = `http://localhost:8000/auth/login?redirect_uri=${redirectUri}`;
+        const redirectUri = encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000/');
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?redirect_uri=${redirectUri}`;
     };
 
     const handleLogout = async () => {
-        await fetch('http://localhost:8000/auth/logout', {
-            method: 'POST',
-            credentials: 'include',
-        });
-        setUser(null);
-        window.location.reload();
+        setLoading(true);
+        try {
+            await api.logout();
+            setUser(null);
+            // Redirect to home page instead of reload
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Failed to logout:', error);
+            // Show user-friendly error message
+            alert('Logout failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) return (
