@@ -19,7 +19,7 @@ export const metadata = {
     openGraph: {
         type: 'website',
         locale: 'en_US',
-        url: process.env.NEXT_PUBLIC_SITE_URL || 'https://instashare-dfs.netlify.app',
+        url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000/',
         siteName: 'Instashare DFS',
         title: 'Instashare DFS - Distributed File System',
         description: 'A modern distributed file system with IPFS storage, file compression, and seamless sharing capabilities.',

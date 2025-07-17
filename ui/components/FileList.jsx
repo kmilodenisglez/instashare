@@ -76,25 +76,37 @@ export default function FileList() {
                         </td>
                         <td className="size-column">{file.size?.toLocaleString()}</td>
                         <td>
-                            <button className="action-btn" onClick={() => setRenameId(file.id)}>
-                                Rename
-                            </button>
-                            {file.status === 'zipped' && file.zip_ipfs_hash && (
-                                <button
-                                    className="action-btn"
-                                    style={{ marginLeft: 8, background: '#4285f4', color: 'white' }}
-                                    onClick={() => window.open(api.downloadZip(file.id), '_blank')}
+                            <div className="action-buttons">
+                                <button 
+                                    className="action-btn rename-btn" 
+                                    onClick={() => setRenameId(file.id)}
                                 >
-                                    Download ZIP
+                                    <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                    Rename
                                 </button>
-                            )}
-                            <button
-                                className="action-btn"
-                                style={{ marginLeft: 8, background: '#34a853', color: 'white' }}
-                                onClick={() => window.open(api.downloadFile(file.id), '_blank')}
-                            >
-                                Download Original
-                            </button>
+                                {file.status === 'zipped' && file.zip_ipfs_hash && (
+                                    <button
+                                        className="action-btn download-zip-btn"
+                                        onClick={() => window.open(api.downloadZip(file.id), '_blank')}
+                                    >
+                                        <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        ZIP
+                                    </button>
+                                )}
+                                <button
+                                    className="action-btn download-original-btn"
+                                    onClick={() => window.open(api.downloadFile(file.id), '_blank')}
+                                >
+                                    <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
+                                    </svg>
+                                    Original
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 ))}
@@ -246,25 +258,69 @@ export default function FileList() {
                 /* Actions column */
                 .files-table th:last-child,
                 .files-table td:last-child {
-                    width: 15%;
+                    width: 20%;
                     text-align: center;
                 }
 
+                .action-buttons {
+                    display: flex;
+                    gap: 8px;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
                 .action-btn {
-                    background: #2bdcd2;
-                    color: #171717;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
                     border: none;
-                    border-radius: 4px;
-                    padding: 6px 16px;
+                    border-radius: 6px;
+                    padding: 8px 12px;
                     font-size: 13px;
                     font-weight: 500;
                     cursor: pointer;
-                    transition: all 0.2s;
+                    transition: all 0.2s ease;
+                    text-decoration: none;
+                    min-width: fit-content;
                 }
 
-                .action-btn:hover {
+                .btn-icon {
+                    width: 16px;
+                    height: 16px;
+                    flex-shrink: 0;
+                }
+
+                .rename-btn {
+                    background: #2bdcd2;
+                    color: #171717;
+                }
+
+                .rename-btn:hover {
                     background: #24b5ab;
                     transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(43, 220, 210, 0.3);
+                }
+
+                .download-zip-btn {
+                    background: #4285f4;
+                    color: white;
+                }
+
+                .download-zip-btn:hover {
+                    background: #3367d6;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+                }
+
+                .download-original-btn {
+                    background: #34a853;
+                    color: white;
+                }
+
+                .download-original-btn:hover {
+                    background: #2d8f47;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
                 }
 
                 .refresh-btn {
@@ -304,6 +360,21 @@ export default function FileList() {
                     
                     .size-column {
                         display: none;
+                    }
+
+                    .action-buttons {
+                        flex-direction: column;
+                        gap: 4px;
+                    }
+
+                    .action-btn {
+                        padding: 6px 10px;
+                        font-size: 12px;
+                    }
+
+                    .btn-icon {
+                        width: 14px;
+                        height: 14px;
                     }
                 }
             `}</style>
