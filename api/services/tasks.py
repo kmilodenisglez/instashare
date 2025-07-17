@@ -1,12 +1,15 @@
-from .celery_app import celery_app
-from api.database import SessionLocal
-from api.models import File as FileModel
-from api.external_services import upload_file_to_ipfs
-import httpx
-import zipfile
-import tempfile
-import os
 import logging
+import os
+import tempfile
+import zipfile
+
+import httpx
+
+from api.database import SessionLocal
+from api.external_services import upload_file_to_ipfs
+from api.models import File as FileModel
+
+from .celery_app import celery_app
 
 
 @celery_app.task(bind=True)

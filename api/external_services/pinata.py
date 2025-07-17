@@ -1,6 +1,7 @@
-import os
-import requests
 import logging
+import os
+
+import requests
 
 PINATA_FILE_API_ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS"
 

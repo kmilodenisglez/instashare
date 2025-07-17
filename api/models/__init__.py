@@ -2,15 +2,15 @@
 Models package - SQLAlchemy database models
 """
 
-# Importar Base primero
+# Import Base first
 from .base import Base
-
-# Importar modelos en orden correcto para evitar problemas de relaciones
-from .user import User
 from .file import File
 
+# Import models in the correct order to avoid relationship problems
+from .user import User
 
-# Asegurar que todas las relaciones estén configuradas
+
+# Ensure all relationships are configured
 def configure_mappers():
     """Configure all SQLAlchemy mappers"""
     from sqlalchemy.orm import configure_mappers

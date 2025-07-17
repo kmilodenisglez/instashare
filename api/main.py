@@ -1,14 +1,14 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from api.database import create_tables
-from api.routers import auth_router
-from api.routers import file_router
-from dotenv import load_dotenv
-import os
+from api.routers import auth_router, file_router
 
 # load environment variables from .env
 load_dotenv()

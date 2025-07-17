@@ -1,5 +1,5 @@
-import sqlite3
 import os
+import sqlite3
 
 # Set environment variables for local development if not already set
 if not os.getenv("OUTPUT_DIR"):

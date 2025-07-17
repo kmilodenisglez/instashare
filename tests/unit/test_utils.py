@@ -1,15 +1,14 @@
-import pytest
-from starlette.testclient import TestClient
-from api.main import app
-
-from api.routers.file import get_current_user
-from api.external_services.pinata import upload_file_to_ipfs
-
-from unittest.mock import patch
-from api.services.files import process_and_upload_zip
 from types import SimpleNamespace
+from unittest.mock import patch
 
+import pytest
 import requests
+from starlette.testclient import TestClient
+
+from api.external_services.pinata import upload_file_to_ipfs
+from api.main import app
+from api.routers.file import get_current_user
+from api.services.files import process_and_upload_zip
 
 BASE_URL = "http://localhost:8000"
 

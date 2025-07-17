@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Request, Depends, HTTPException
-from fastapi.responses import RedirectResponse
+import os
+
 from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
-import os
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from api.models import User
+
 from api.database import get_db
+from api.models import User
 
 # load environment variables from .env
 load_dotenv()
