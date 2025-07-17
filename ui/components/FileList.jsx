@@ -79,6 +79,22 @@ export default function FileList() {
                             <button className="action-btn" onClick={() => setRenameId(file.id)}>
                                 Rename
                             </button>
+                            {file.status === 'zipped' && file.zip_ipfs_hash && (
+                                <button
+                                    className="action-btn"
+                                    style={{ marginLeft: 8, background: '#4285f4', color: 'white' }}
+                                    onClick={() => window.open(api.downloadZip(file.id), '_blank')}
+                                >
+                                    Download ZIP
+                                </button>
+                            )}
+                            <button
+                                className="action-btn"
+                                style={{ marginLeft: 8, background: '#34a853', color: 'white' }}
+                                onClick={() => window.open(api.downloadFile(file.id), '_blank')}
+                            >
+                                Download Original
+                            </button>
                         </td>
                     </tr>
                 ))}
