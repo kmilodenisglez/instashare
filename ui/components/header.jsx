@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import netlifyLogo from 'public/netlify-logo.svg';
 import githubLogo from 'public/images/github-mark-white.svg';
+import LoginButton from "./LoginButton";
 
 const navItems = [
     { linkText: 'Home', href: '/' },
@@ -37,6 +38,7 @@ export function Header() {
             >
                 <Image src={githubLogo} alt="GitHub logo" className="w-7" />
             </Link>
+            <LoginButton />
         </nav>
     );
 }
