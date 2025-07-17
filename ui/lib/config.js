@@ -11,7 +11,7 @@ export const API_CONFIG = {
         FILES_LIST: '/api/v1/files/',
         FILES_UPLOAD: '/api/v1/files/upload',
         FILES_DOWNLOAD: '/api/v1/files/{file_id}/download',
-        FILES_DOWNLOAD_ZIP: '/api/v1/files/{file_id}/download-zip',
+        FILES_DOWNLOAD_ZIP: '/api/v1/files/{file_id}/download_zip',
         FILES_RENAME: '/api/v1/files/{file_id}/rename',
         FILES_INFO: '/api/v1/files/{file_id}',
         
