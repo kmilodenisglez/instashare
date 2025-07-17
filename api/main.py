@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.database import create_tables
-from app.routers import auth_router
-from app.routers import file_router
+from api.database import create_tables
+from api.routers import auth_router
+from api.routers import file_router
 from dotenv import load_dotenv
 import os
 

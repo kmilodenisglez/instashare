@@ -23,6 +23,6 @@ def get_db():
 
 # Función para crear tablas después de importar todos los modelos
 def create_tables():
-    from app.models import Base, configure_mappers
+    from api.models import Base, configure_mappers
     configure_mappers()  # Configurar mappers antes de crear tablas
     Base.metadata.create_all(bind=engine)

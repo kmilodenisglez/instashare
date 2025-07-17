@@ -1,7 +1,7 @@
 from .celery_app import celery_app
-from app.database import SessionLocal
-from app.models import File as FileModel
-from app.external_services import upload_file_to_ipfs
+from api.database import SessionLocal
+from api.models import File as FileModel
+from api.external_services import upload_file_to_ipfs
 import httpx
 import zipfile
 import tempfile

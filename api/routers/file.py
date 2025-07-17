@@ -1,16 +1,16 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from app.models import File as FileModel, User
-from app.database import get_db
-from app.schemas import FileOut
+from api.models import File as FileModel, User
+from api.database import get_db
+from api.schemas import FileOut
 from typing import List
-from datetime import datetime
-from app.external_services import upload_file_to_ipfs
+from datetime import datetime, UTC
+from api.external_services import upload_file_to_ipfs
 import os
 import shutil
 from fastapi.responses import StreamingResponse
 import httpx
-from app.services import process_file_zip
+from api.services import process_file_zip
 
 router = APIRouter()
 
@@ -49,8 +49,8 @@ async def upload_file(
         size=os.path.getsize(file_path) if os.path.exists(file_path) else None,
         status='pending',
         ipfs_hash=ipfs_hash,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC)
     )
     db.add(file_record)
     db.commit()

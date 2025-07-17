@@ -4,8 +4,8 @@ from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
 import os
 from sqlalchemy.orm import Session
-from app.models import User
-from app.database import get_db
+from api.models import User
+from api.database import get_db
 
 # load environment variables from .env
 load_dotenv()
@@ -51,3 +51,10 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
         "message": "Welcome",
         "user": request.session['user']
     }
+
+
+@router.post("/test-login")
+async def test_login(request: Request):
+    # Simulate a user login for testing
+    request.session["user"] = {"id": 1, "email": "test@example.com", "name": "Test"}
+    return {"message": "logged in"}

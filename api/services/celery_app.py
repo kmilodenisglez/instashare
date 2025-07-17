@@ -12,7 +12,7 @@ celery_app = Celery(
     'instashare',
     broker=REDIS_URL,
     backend=REDIS_URL,
-    include=['app.services.tasks']
+    include=['api.services.tasks']
 )
 
 # Celery configuration
