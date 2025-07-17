@@ -9,10 +9,11 @@ os.makedirs(os.path.dirname(DATABASE_URL.replace("sqlite:///", "")), exist_ok=Tr
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def get_db():
     db = SessionLocal()
@@ -21,8 +22,10 @@ def get_db():
     finally:
         db.close()
 
+
 # Función para crear tablas después de importar todos los modelos
 def create_tables():
     from api.models import Base, configure_mappers
+
     configure_mappers()  # Configurar mappers antes de crear tablas
     Base.metadata.create_all(bind=engine)

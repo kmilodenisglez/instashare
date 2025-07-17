@@ -17,19 +17,21 @@ load_dotenv()
 create_tables()
 
 app = FastAPI(
-    title='Instashare DFS API',
+    title="Instashare DFS API",
     redoc_url=None,
-    version='1.0.0',
-    description='Instashare DFS API',
+    version="1.0.0",
+    description="Instashare DFS API",
     contact={
-        'name': 'Instashare',
+        "name": "Instashare",
         # 'url': '',
-        'email': 'kmilo.denis.glez@gmail.com'
-    }
+        "email": "kmilo.denis.glez@gmail.com",
+    },
 )
 
 # session middleware
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"))
+app.add_middleware(
+    SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key")
+)
 
 # CORS for development
 app.add_middleware(
@@ -43,6 +45,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth")
 app.include_router(file_router, prefix="/api/v1")
 
+
 @app.get("/api/v1")
 def read_root():
-    return {"message": "Welcome to Instashare DFS API"} 
+    return {"message": "Welcome to Instashare DFS API"}

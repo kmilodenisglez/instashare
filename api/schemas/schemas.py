@@ -2,12 +2,15 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
+
 class FileBase(BaseModel):
     filename: str
     size: Optional[int] = None
 
+
 class FileCreate(FileBase):
     pass
+
 
 class FileOut(FileBase):
     id: int
@@ -18,4 +21,4 @@ class FileOut(FileBase):
     updated_at: datetime
 
     class Config:
-        from_attributes = True 
+        from_attributes = True

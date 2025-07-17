@@ -13,6 +13,7 @@ import requests
 
 BASE_URL = "http://localhost:8000"
 
+
 def login_and_get_cookies(email="test@example.com", password="testpassword"):
     """
     Logs in and returns session cookies for authenticated requests.
@@ -20,8 +21,7 @@ def login_and_get_cookies(email="test@example.com", password="testpassword"):
     """
     # Example for a test login endpoint that sets the session
     resp = requests.post(
-        f"{BASE_URL}/auth/test-login",
-        json={"email": email, "password": password}
+        f"{BASE_URL}/auth/test-login", json={"email": email, "password": password}
     )
     assert resp.status_code == 200
     # Return the cookies for use in subsequent requests
@@ -32,20 +32,25 @@ def login_and_get_cookies(email="test@example.com", password="testpassword"):
 def authenticated_client():
     with TestClient(app) as client:
         # Simulate login
-        resp = client.post("/auth/test-login", json={"email": "test@example.com", "password": "testpassword"})
+        resp = client.post(
+            "/auth/test-login",
+            json={"email": "test@example.com", "password": "testpassword"},
+        )
         assert resp.status_code == 200
         yield client
+
 
 def test_upload_file_with_pinata_mock(authenticated_client):
     with patch("api.routers.file.upload_file_to_ipfs") as mock_upload:
         mock_upload.return_value = "QmFakeHash123"
         response = authenticated_client.post(
             "/api/v1/files/upload",
-            files={"uploaded_file": ("test.txt", b"hello world")}
+            files={"uploaded_file": ("test.txt", b"hello world")},
         )
         assert response.status_code == 200
         data = response.json()
         assert data["ipfs_hash"] == "QmFakeHash123"
+
 
 def test_process_and_upload_zip():
     with patch("api.services.files.upload_file_to_ipfs") as mock_upload:
@@ -63,7 +68,7 @@ def test_upload():
         response = requests.post(
             f"{BASE_URL}/api/v1/files/upload",
             files={"uploaded_file": f},
-            cookies=cookies
+            cookies=cookies,
         )
     print(response.json())
     assert response.status_code == 200

@@ -9,7 +9,7 @@ if not os.getenv("OUTPUT_DIR"):
 from app.config import settings
 
 # Connect to the correct database (instashare.db, not db.libsql)
-db_path = os.path.join(settings.OUTPUT_DIR, 'instashare.db')
+db_path = os.path.join(settings.OUTPUT_DIR, "instashare.db")
 print(f"Connecting to database: {db_path}")
 
 if not os.path.exists(db_path):
