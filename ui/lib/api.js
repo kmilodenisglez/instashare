@@ -1,4 +1,4 @@
-import { API_CONFIG, buildApiUrl } from '../app/layout';
+import { API_CONFIG, buildApiUrl } from './config';
 
 // API client with error handling and retries
 class ApiClient {
