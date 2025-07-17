@@ -37,6 +37,13 @@ async def logout(request: Request):
     request.session.clear()
     return {"message": "logged out"}
 
+@router.get("/me")
+async def get_me(request: Request):
+    user = request.session.get("user")
+    if not user:
+        return {"authenticated": False}
+    return {"authenticated": True, "user": user}
+
 @router.get("/callback/google")
 async def auth_callback(request: Request, db: Session = Depends(get_db)):
     token = await oauth.google.authorize_access_token(request)
