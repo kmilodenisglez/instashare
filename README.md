@@ -72,8 +72,8 @@ celery -A app.celery_app beat --loglevel=info
    Check Task Status
 ```bash
 # In a new terminal
-celery -A app.celery_app inspect active
-celery -A app.celery_app inspect registered
+celery -A app.services.celery_app inspect active
+celery -A app.services.celery_app inspect registered
 ```
 
 ## You can test your endpoints as they are:

@@ -8,8 +8,8 @@ __pycache__/
 .idea/
 .DS_Store
 /.venv/
-/instashare/output/*
-!/instashare/output/.gitkeep
+/output/*
+!/output/.gitkeep
 
 # Celery stuff:
 celerybeat-schedule

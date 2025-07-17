@@ -5,12 +5,12 @@ from app.database import get_db
 from app.schemas import FileOut
 from typing import List
 from datetime import datetime
-from app.pinata import upload_file_to_ipfs
+from app.external_services import upload_file_to_ipfs
 import os
 import shutil
 from fastapi.responses import StreamingResponse
 import httpx
-from app.tasks import process_file_zip
+from app.services import process_file_zip
 
 router = APIRouter()
 

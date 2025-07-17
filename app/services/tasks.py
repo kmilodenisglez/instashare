@@ -1,20 +1,19 @@
-from app.celery_app import celery_app
+from .celery_app import celery_app
 from app.database import SessionLocal
 from app.models import File as FileModel
-from app.pinata import upload_file_to_ipfs
+from app.external_services import upload_file_to_ipfs
 import httpx
 import zipfile
 import tempfile
 import os
 import logging
 
-from dotenv import load_dotenv
-load_dotenv()  # load environment variables from .env
-
 @celery_app.task(bind=True)
 def process_file_zip(self, file_id: int):
     """Download file from Pinata, compress to ZIP, upload ZIP, update DB"""
     db = SessionLocal()
+    file_record = None  # Inicializar la variable
+    
     try:
         # Get file record
         file_record = db.query(FileModel).filter(FileModel.id == file_id).first()
@@ -27,6 +26,7 @@ def process_file_zip(self, file_id: int):
         
         # Download file from Pinata
         ipfs_url = f"https://gateway.pinata.cloud/ipfs/{file_record.ipfs_hash}"
+        
         async def download_file():
             async with httpx.AsyncClient() as client:
                 response = await client.get(ipfs_url, timeout=60.0)
@@ -58,7 +58,7 @@ def process_file_zip(self, file_id: int):
         
     except Exception as e:
         # Update status to failed
-        if file_record:
+        if file_record is not None:  # Verificar que existe
             file_record.status = 'failed'
             db.commit()
         logging.error(f"Failed to process file {file_id}: {str(e)}")

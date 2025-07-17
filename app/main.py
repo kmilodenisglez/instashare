@@ -3,13 +3,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from app.auth import router as auth_router
-from app.file import router as file_router
+
+from app.database import create_tables
+from app.routers import auth_router
+from app.routers import file_router
 from dotenv import load_dotenv
 import os
 
 # load environment variables from .env
 load_dotenv()
+
+# Create tables at application startup
+create_tables()
 
 app = FastAPI(
     title='Instashare DFS API',
