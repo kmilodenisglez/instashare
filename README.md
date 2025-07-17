@@ -48,6 +48,34 @@ REDIS_URL=redis://localhost:6379
 
 ---
 
+## Docker Usage
+
+You can run the entire stack (FastAPI, Celery worker, Celery beat, Redis) using Docker and Docker Compose.
+
+### 1. Build and Start All Services
+```bash
+docker-compose up --build
+```
+
+### 2. Access the App
+- FastAPI docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 3. Stop All Services
+```bash
+docker-compose down
+```
+
+### 4. Run Linters or Tests in Docker
+You can run code quality tools or tests inside the app container:
+```bash
+docker-compose run --rm app black .
+docker-compose run --rm app flake8 .
+docker-compose run --rm app mypy api/
+docker-compose run --rm app pytest
+```
+
+---
+
 ## Running the Services
 
 ### Terminal 1: Start FastAPI Server
