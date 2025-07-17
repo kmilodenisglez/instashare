@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: .
-    command: sh -c 'uvicorn api.main:app --host 0.0.0.0 --port $PORT'
+    command: sh -c 'uvicorn api.main:app --host 0.0.0.0 --port 8000'
     volumes:
       - .:/home/appuser
     env_file:
