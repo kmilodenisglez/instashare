@@ -1,2 +1,2 @@
-web: sh -c 'uvicorn api.main:app --host 0.0.0.0 --port $PORT'
-worker: celery -A app.celery_app worker --loglevel=info 
+web: uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
+worker: celery -A api.celery_app worker --loglevel=info
