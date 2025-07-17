@@ -26,7 +26,7 @@ export default function UserInfo() {
     }, []);
 
     const handleLogout = async () => {
-        await fetch('http://localhost:8000/logout', {
+        await fetch('http://localhost:8000/auth/logout', {
             method: 'POST',
             credentials: 'include',
         });
