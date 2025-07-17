@@ -32,6 +32,11 @@ async def login(request: Request, redirect_uri: str = "http://localhost:3000/"):
     return await oauth.google.authorize_redirect(request, redirect_uri_backend)
 
 
+@router.post("/logout")
+async def logout(request: Request):
+    request.session.clear()
+    return {"message": "logged out"}
+
 @router.get("/callback/google")
 async def auth_callback(request: Request, db: Session = Depends(get_db)):
     token = await oauth.google.authorize_access_token(request)
