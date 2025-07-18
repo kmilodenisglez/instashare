@@ -59,12 +59,14 @@ export function AuthProvider({ children }) {
       const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_REGISTER, formData);
       if (res.ok) {
         await fetchUser();
-        return true;
+        return { success: true };
       } else {
-        return false;
+        const data = await res.json().catch(() => ({}));
+        return { success: false, error: data.detail || 'Registration failed. Email may already be in use.' };
       }
     } catch (e) {
-      return false;
+      // Here you can access e.data.detail if it exists
+      return { success: false, error: e.data?.detail || 'Registration failed. Email may already be in use.' };
     }
   };
 
