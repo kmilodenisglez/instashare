@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import FileUpload from "../components/FileUpload";
 import FileList from "../components/FileList";
+import Link from 'next/link';
 
 export default function Page() {
     const [user, setUser] = useState(null);
@@ -29,10 +30,6 @@ export default function Page() {
         }
         checkAuth();
     }, []);
-
-    const handleLogin = () => {
-        api.login();
-    };
 
     const handleLogout = async () => {
         try {
@@ -61,12 +58,11 @@ export default function Page() {
                 <div className="text-center">
                     <h1 className="text-3xl font-bold mb-4">Welcome to Instashare DFS</h1>
                     <p className="text-lg mb-6">Please log in to access your files</p>
-                    <button
-                        onClick={handleLogin}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-                    >
-                        Login with Google
-                    </button>
+                    <Link href="/auth/login">
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                            Login
+                        </button>
+                    </Link>
                 </div>
             </div>
         );
