@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '../../../lib/api';
+import { useAuth } from '../../../components/AuthContext';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -11,20 +11,19 @@ export default function LoginPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-
-        try {
-            await api.loginLocal(email, password);
+        const success = await login(email, password);
+        if (success) {
             router.push('/');
-        } catch (error) {
+        } else {
             setError('Invalid email or password');
-        } finally {
-            setLoading(false);
         }
+        setLoading(false);
     };
 
     const handleGoogleLogin = () => {
