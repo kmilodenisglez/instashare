@@ -44,22 +44,25 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Session Middleware
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"),
-)
-
 # CORS Middleware (Development + Production domains)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://localhost:8888",
         "http://localhost:3000",
         "https://instashare-qba.netlify.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Session Middleware
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"),
+    same_site="none", # ← 🔥 This allows cross-domain cookies
+    https_only=True   # ← 🔥 This forces HTTPS (required for cross-domain use)
 )
 
 # Routers
