@@ -9,6 +9,7 @@ asyncpg
 pydantic
 pydantic_settings
 passlib[bcrypt]
+bcrypt==3.2.0 
 python-jose[cryptography]
 celery[redis]
 redis
