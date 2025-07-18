@@ -10,6 +10,7 @@ from api.external_services import upload_file_to_ipfs
 from api.models import File as FileModel
 
 from .celery_app import celery_app
+from .files import download_file
 
 
 @celery_app.task(bind=True)
@@ -31,16 +32,10 @@ def process_file_zip(self, file_id: int):
         # Download file from Pinata
         ipfs_url = f"https://gateway.pinata.cloud/ipfs/{file_record.ipfs_hash}"
 
-        async def download_file():
-            async with httpx.AsyncClient() as client:
-                response = await client.get(ipfs_url, timeout=60.0)
-                response.raise_for_status()
-                return response.content
-
         # Run async download in sync context
         import asyncio
 
-        file_content = asyncio.run(download_file())
+        file_content = asyncio.run(download_file(ipfs_url))
 
         # Create ZIP file
         with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as temp_zip:
