@@ -20,3 +20,4 @@ celerybeat.pid
 
 # Local Netlify folder
 .netlify
+/.coverage
