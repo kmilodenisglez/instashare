@@ -100,6 +100,22 @@ export const api = {
     logout: () => apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGOUT),
     getUser: () => apiClient.get(API_CONFIG.ENDPOINTS.AUTH_USER),
     
+    // Local authentication (new endpoints)
+    loginLocal: async (email, password) => {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        return apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGIN_LOCAL || '/auth/login', formData);
+    },
+    
+    register: async (email, password, name = '') => {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        if (name) formData.append('name', name);
+        return apiClient.post(API_CONFIG.ENDPOINTS.AUTH_REGISTER || '/auth/register', formData);
+    },
+    
     // Files
     getFiles: () => apiClient.get(API_CONFIG.ENDPOINTS.FILES_LIST),
     uploadFile: (formData) => apiClient.post(API_CONFIG.ENDPOINTS.FILES_UPLOAD, formData),

@@ -4,6 +4,8 @@ export const API_CONFIG = {
     ENDPOINTS: {
         // Authentication
         AUTH_LOGIN: '/auth/login',
+        AUTH_LOGIN_LOCAL: '/auth/login',
+        AUTH_REGISTER: '/auth/register',
         AUTH_LOGOUT: '/auth/logout',
         AUTH_USER: '/auth/me',
         
