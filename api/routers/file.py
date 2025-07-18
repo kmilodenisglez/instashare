@@ -44,8 +44,13 @@ async def upload_file(
     # Save uploaded file to disk
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(uploaded_file.file, buffer)
-    # Upload file to Pinata
-    ipfs_hash = upload_file_to_ipfs(file_path)
+    try:
+        # Upload file to Pinata
+        ipfs_hash = upload_file_to_ipfs(file_path)
+    except Exception as e:
+        # Returns a 500 error with the exception message
+        raise HTTPException(status_code=500, detail=f"Failed to upload to Pinata: {str(e)}")
+
     # Optionally, remove the file after upload
     try:
         os.remove(file_path)
