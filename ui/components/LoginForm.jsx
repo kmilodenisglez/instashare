@@ -1,55 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import api from '@ui/lib/api';
+import { useAuth } from './AuthContext';
 
-export default function LoginForm({ onSuccess }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+export default function LoginForm() {
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const success = await login(email, password);
+    if (!success) setError('Login failed');
+    setLoading(false);
+  };
 
-        try {
-            const response = await api.loginLocal(email, password);
-            const data = await response.json();
-            setEmail('');
-            setPassword('');
-            onSuccess && onSuccess();
-        } catch (error) {
-            setError(error.message || 'Login failed');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <form onSubmit={handleLogin} style={{ marginBottom: 24 }}>
-            <h2>Login</h2>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                required
-                onChange={e => setEmail(e.target.value)}
-                style={{ display: 'block', marginBottom: 8 }}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                required
-                onChange={e => setPassword(e.target.value)}
-                style={{ display: 'block', marginBottom: 8 }}
-            />
-            <button type="submit" disabled={loading}>
-                {loading ? 'Logging in...' : 'Login'}
-            </button>
-            {error && <div style={{ color: 'red', marginTop: 8 }}>{error}</div>}
-        </form>
-    );
+  return (
+    <form onSubmit={handleLogin}>
+      <h2>Login</h2>
+      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="Password" />
+      <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+    </form>
+  );
 }
