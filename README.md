@@ -237,3 +237,7 @@ mypy api/ tests/
 black .
 isort .
 ```
+
+
+> Important: Endpoints returning `StreamingResponse` or `generators` (e.g., "/files/{file_id}/download_zip" GET) were not cached.
+The @cache decorator is not supported for streaming responses.
