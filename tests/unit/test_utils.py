@@ -1,17 +1,17 @@
-from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock, AsyncMock
 
 import pytest
 import requests
 from starlette.testclient import TestClient
 
-from api.external_services.pinata import upload_file_to_ipfs
 from api.main import app
-from api.routers.file import get_current_user
 from api.services.files import process_and_upload_zip
 
 BASE_URL = "http://localhost:8000"
 
+import celery
+
+celery.current_app.conf.task_always_eager = True
 
 def login_and_get_cookies(email="test@example.com", password="testpassword"):
     """
@@ -39,9 +39,27 @@ def authenticated_client():
         yield client
 
 
+def async_return(value):
+    async def _coroutine(*args, **kwargs):
+        return value
+    return _coroutine()
+
+async def mock_download_file(*args, **kwargs):
+    return b"fake file content"
+
 def test_upload_file_with_pinata_mock(authenticated_client):
-    with patch("api.routers.file.upload_file_to_ipfs") as mock_upload:
+    with patch("api.routers.file.upload_file_to_ipfs") as mock_upload, \
+         patch("requests.get") as mock_requests_get, \
+         patch("api.services.files.download_file", new_callable=AsyncMock) as mock_download:
         mock_upload.return_value = "QmFakeHash123"
+        mock_download.side_effect = mock_download_file
+        # Mock the download to return a fake response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b"fake file content"
+        mock_response.raise_for_status = lambda: None
+        mock_requests_get.return_value = mock_response
+
         response = authenticated_client.post(
             "/api/v1/files/upload",
             files={"uploaded_file": ("test.txt", b"hello world")},
@@ -69,5 +87,8 @@ def test_upload():
             files={"uploaded_file": f},
             cookies=cookies,
         )
-    print(response.json())
+    if response.status_code == 200:
+        print(response.json())
+    else:
+        print("Error:", response.status_code, response.text)
     assert response.status_code == 200
