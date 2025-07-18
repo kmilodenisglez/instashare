@@ -42,15 +42,15 @@ export default function Page() {
             <section className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <h2>Upload Files</h2>
-                    <div className="flex items-center gap-4">
-                        <span>Welcome, {user.name || user.email}</span>
-                        <button
-                            onClick={logout}
-                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"
-                        >
-                            Logout
-                        </button>
-                    </div>
+                    {/*<div className="flex items-center gap-4">*/}
+                    {/*    <span>Welcome, {user.name || user.email}</span>*/}
+                    {/*    <button*/}
+                    {/*        onClick={logout}*/}
+                    {/*        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"*/}
+                    {/*    >*/}
+                    {/*        Logout*/}
+                    {/*    </button>*/}
+                    {/*</div>*/}
                 </div>
                 <FileUpload onUploadSuccess={handleUploadSuccess}/>
                 <FileList key={refresh}/>
