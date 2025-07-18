@@ -85,12 +85,12 @@ uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 
 ### Terminal 2: Start Celery Worker
 ```bash
-celery -A api.celery_app worker --loglevel=info
+celery -A api.services.celery_app worker --loglevel=info
 ```
 
 ### Terminal 3: Start Celery Beat (Optional, for periodic tasks)
 ```bash
-celery -A api.celery_app beat --loglevel=info
+celery -A api.services.celery_app beat --loglevel=info
 ```
 
 ---
@@ -139,7 +139,7 @@ You can also use tools like:
 
 #### Celery Worker Not Starting
 ```bash
-celery -A api.celery_app inspect ping
+celery -A api.services.celery_app inspect ping
 ```
 
 ---
@@ -174,8 +174,8 @@ pytest tests/e2e/
 
 Check task status:
 ```bash
-celery -A api.celery_app inspect active
-celery -A api.celery_app inspect registered
+celery -A api.services.celery_app inspect active
+celery -A api.services.celery_app inspect registered
 ```
 
 ---
