@@ -16,7 +16,6 @@ export function AuthProvider({ children }) {
     try {
       const res = await apiClient.get(API_CONFIG.ENDPOINTS.AUTH_USER);
       const data = await res.json();
-      console.log("AuthProvider --->  ", data)
       if (data.authenticated) {
         setUser(data.user);
       } else {
@@ -37,11 +36,15 @@ export function AuthProvider({ children }) {
     const formData = new FormData();
     formData.append('email', email);
     formData.append('password', password);
-    const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGIN, formData);
-    if (res.ok) {
-      await fetchUser();
-      return true;
-    } else {
+    try {
+      const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGIN, formData);
+      if (res.ok) {
+        await fetchUser();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   };
@@ -52,11 +55,15 @@ export function AuthProvider({ children }) {
     formData.append('email', email);
     formData.append('password', password);
     if (name) formData.append('name', name);
-    const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_REGISTER, formData);
-    if (res.ok) {
-      await fetchUser();
-      return true;
-    } else {
+    try {
+      const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_REGISTER, formData);
+      if (res.ok) {
+        await fetchUser();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   };
