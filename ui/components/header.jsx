@@ -5,7 +5,7 @@ import githubLogo from 'public/images/github-mark-white.svg';
 import AuthButton from './AuthButton';
 
 const navItems = [
-    { linkText: 'Home', href: '/' },
+    // { linkText: 'Home', href: '/' },
 ];
 
 export function Header() {
