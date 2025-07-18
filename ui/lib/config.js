@@ -1,6 +1,6 @@
 // Backend API configuration
 export const API_CONFIG = {
-    BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+    BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://web-production-23301.up.railway.app',
     ENDPOINTS: {
         // Authentication
         AUTH_LOGIN: '/auth/login',
