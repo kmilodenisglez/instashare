@@ -2,12 +2,15 @@ import os
 
 from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Form
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from api.database import get_db
 from api.models import User
+from api.utils import hash_password, verify_password
+from api.utils.validators import validate_password
 
 # load environment variables from .env
 load_dotenv()
@@ -25,17 +28,54 @@ oauth.register(
 
 
 @router.get("/login")
-async def login(request: Request, redirect_uri: str = "http://localhost:3000/"):
+async def google_login(request: Request, redirect_uri: str = "http://localhost:3000/"):
     # Save redirect_uri in session
     request.session["redirect_uri"] = redirect_uri
     redirect_uri_backend = request.url_for("auth_callback")
     return await oauth.google.authorize_redirect(request, redirect_uri_backend)
 
 
+@router.post("/register")
+async def register(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    name: str = Form(None),
+    db: Session = Depends(get_db)
+):
+    # Password validation
+    validate_password(password)
+    
+    # Check if user already exists using modern SQLAlchemy syntax
+    existing_user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    user = User(email=email, name=name, hashed_password=hash_password(password))
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    # Optionally log in the user after registration
+    request.session["user"] = {"id": user.id, "email": user.email, "name": user.name}
+    return {"message": "User registered", "user": {"id": user.id, "email": user.email, "name": user.name}}
+
+@router.post("/login")
+async def login(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
+    if not user or user.hashed_password is None or not verify_password(password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    request.session["user"] = {"id": user.id, "email": user.email, "name": user.name}
+    return {"message": "Logged in", "user": {"id": user.id, "email": user.email, "name": user.name}}
+
 @router.post("/logout")
 async def logout(request: Request):
     request.session.clear()
-    return {"message": "logged out"}
+    return {"message": "Logged out"}
 
 
 @router.get("/me")
