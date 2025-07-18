@@ -40,7 +40,15 @@ class ApiClient {
                 clearTimeout(timeoutId);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    // Intenta extraer el JSON de error
+                    let errorData = {};
+                    try {
+                        errorData = await response.json();
+                    } catch {}
+                    const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    error.status = response.status;
+                    error.data = errorData;
+                    throw error;
                 }
                 
                 return response;
