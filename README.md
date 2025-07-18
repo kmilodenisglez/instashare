@@ -10,6 +10,39 @@ This project is a distributed file system backend built with FastAPI, Celery, an
 - Asynchronous ZIP compression using Celery
 - Download original or ZIP-compressed files
 - File management: list, rename, and get file info
+- Dockerized for local and production use
+- Linters and type checking: black, isort, flake8, mypy
+- Unit, integration, and E2E tests with pytest (coverage >85%)
+- Caching for list/info endpoints (not for streaming responses)
+
+---
+
+## Project Structure (Key Folders)
+
+```
+instashare/
+├── api/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── database.py
+│   ├── external_services/
+│   │   └── pinata.py
+│   ├── main.py
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   ├── services/
+│   └── utils/
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+├── requirements.txt
+├── docker-compose.yml
+├── Dockerfile
+├── README.md
+└── ...
+```
 
 ---
 
@@ -114,15 +147,15 @@ Visit: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### 3. File Upload & ZIP Processing
 - Use `POST /api/v1/files/upload` to upload a file.
-- Check the response for `ipfs_hash`.
+- Check the response for `ipfs_hash` and `id`.
 - Watch the Celery worker terminal for processing logs.
 - Check the file status in the database.
 
 ### 4. File Management
 - `GET /api/v1/files` — List your files
-- `PATCH /api/v1/files/{file_id}` — Rename a file
-- `GET /api/v1/files/{file_id}/download` — Download original file
-- `GET /api/v1/files/{file_id}/download_zip` — Download ZIP file (after processing)
+- `PATCH /api/v1/files/{file_id}/rename?new_name=...` — Rename a file
+- `GET /api/v1/files/{file_id}/download` — Download original file (streaming, not cached)
+- `GET /api/v1/files/{file_id}/download_zip` — Download ZIP file (after processing, streaming, not cached)
 - `GET /api/v1/files/{file_id}` — Get file info
 
 ### 5. Testing with HTTP Clients
@@ -203,8 +236,6 @@ SELECT * FROM users;
 
 ---
 
----
-
 ## **What's Included**
 
 - **black**: Code formatter
@@ -238,6 +269,4 @@ black .
 isort .
 ```
 
-
-> Important: Endpoints returning `StreamingResponse` or `generators` (e.g., "/files/{file_id}/download_zip" GET) were not cached.
-The @cache decorator is not supported for streaming responses.
+> **Important:** Endpoints returning `StreamingResponse` or `generators` (e.g., `/files/{file_id}/download` and `/files/{file_id}/download_zip`) are **not cached**. The `@cache` decorator is not supported for streaming responses.

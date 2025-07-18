@@ -1,41 +1,119 @@
-# Next.js on Netlify Platform Starter
+# Instashare Frontend (UI)
 
-[Live Demo](https://nextjs-platform-starter.netlify.app/)
+This is the frontend for Instashare, built with Next.js, Tailwind CSS, and designed for seamless integration with the Instashare backend API.
 
-A modern starter based on Next.js 14 (App Router), Tailwind, and [Netlify Core Primitives](https://docs.netlify.com/core/overview/#develop) (Edge Functions, Image CDN, Blob Store).
+---
 
-In this site, Netlify Core Primitives are used both implictly for running Next.js features (e.g. Route Handlers, image optimization via `next/image`, and more) and also explicitly by the user code.
+## Features
+- Next.js 15 (App Router)
+- Tailwind CSS 4
+- Modern authentication UI (Google OAuth, classic login/register)
+- File upload, list, and download UI
+- Responsive and accessible design
+- Ready for deployment on Netlify
+- Linting and formatting with ESLint, Prettier
 
-Implicit usage means you're using any Next.js functionality and everything "just works" when deployed - all the plumbing is done for you. Explicit usage is framework-agnostic and typically provides more features than what Next.js exposes.
+---
+
+## Project Structure
+
+```
+ui/
+├── app/                # Next.js app directory (pages, routes, layouts)
+├── components/         # Reusable React components
+├── lib/                # API and config helpers
+├── styles/             # Global and Tailwind CSS
+├── public/             # Static assets (images, favicon, etc.)
+├── data/               # Static data (e.g., quotes)
+├── .eslintrc.json      # ESLint config
+├── .prettierrc         # Prettier config
+├── package.json        # NPM scripts and dependencies
+├── next.config.js      # Next.js config
+├── netlify.toml        # Netlify config
+└── README.md           # This file
+```
+
+---
+
+## Local Development
+
+### 1. Install dependencies
+```bash
+npm install
+```
+
+### 2. Run the development server
+```bash
+npm run dev
+```
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 3. Lint and format code
+```bash
+npm run lint      # Run ESLint
+npm run format    # Run Prettier (if defined)
+```
+
+### 4. Build for production
+```bash
+npm run build
+npm start
+```
+
+---
+
+## Environment Variables
+
+- The frontend expects the backend API URL in `NEXT_PUBLIC_API_URL`.
+- You can set this in a `.env.local` file:
+  ```env
+  NEXT_PUBLIC_API_URL=http://localhost:8000
+  ```
+- For Netlify, this can be set in the Netlify dashboard or via CLI.
+
+---
 
 ## Deploying to Netlify
 
-This site requires [Netlify Next Runtime v5](https://docs.netlify.com/frameworks/next-js/overview/) for full functionality. That version is now being gradually rolled out to all Netlify accounts.
+### Option 1: One-click Deploy (from GitHub)
+- Use the Netlify dashboard to connect your repo and deploy.
 
-After deploying via the button below, please visit the **Site Overview** page for your new site to check whether it is already using the v5 runtime. If not, you'll be prompted to opt-in to to v5.
+### Option 2: Deploy using Netlify CLI
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/next-platform-starter)
+1. **Install Netlify CLI**
+   ```bash
+   npm install -g netlify-cli
+   ```
+2. **Login to Netlify**
+   ```bash
+   netlify login
+   ```
+3. **Link your project (if not already linked)**
+   ```bash
+   netlify link
+   ```
+4. **Set environment variables**
+   ```bash
+   netlify env:set NEXT_PUBLIC_API_URL https://your-backend-url
+   ```
+5. **Run locally with Netlify CLI (optional)**
+   ```bash
+   netlify dev
+   ```
+6. **Deploy to Netlify**
+   ```bash
+   netlify deploy --prod
+   ```
 
-## Developing Locally
+---
 
-1. Clone this repository, then run `npm install` in its root directory.
+## Notes
+- The frontend is designed to work with the Instashare backend API (see backend README for API details).
+- For Google OAuth to work, the backend must be running and properly configured.
+- All file upload, list, and download actions are proxied to the backend API.
+- For local development, ensure both frontend and backend are running and CORS is configured if needed.
 
-2. For the starter to have full functionality locally (e.g. edge functions, blob store), please ensure you have an up-to-date version of Netlify CLI. Run:
+---
 
-```
-npm install netlify-cli@latest -g
-```
-
-3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
-
-```
-netlify link
-```
-
-4. Then, run the Next.js development server via Netlify CLI:
-
-```
-netlify dev
-```
-
-If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
+## License
+MIT
