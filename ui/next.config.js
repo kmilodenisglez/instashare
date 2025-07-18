@@ -8,7 +8,6 @@ const nextConfig = {
     images: {
         unoptimized: true
     },
-    // output: 'export',
 
     // Environment variables
     env: {
