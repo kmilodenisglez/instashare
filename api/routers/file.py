@@ -6,6 +6,7 @@ from typing import List
 import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from fastapi.responses import StreamingResponse
+from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 from api.database import get_db
@@ -68,6 +69,7 @@ async def upload_file(
 
 
 @router.get("/files", response_model=List[FileOut])
+@cache(expire=5)  # cache the response for 60 seconds
 async def list_files(
     db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -97,6 +99,7 @@ async def rename_file(
 
 
 @router.get("/files/{file_id}", response_model=FileOut)
+@cache(expire=30)
 async def get_file(
     file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -111,6 +114,7 @@ async def get_file(
 
 
 @router.get("/files/{file_id}/download")
+@cache(expire=120)
 async def download_file(
     file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -133,6 +137,7 @@ async def download_file(
 
 
 @router.get("/files/{file_id}/download_zip")
+@cache(expire=120)
 async def download_zip_file(
     file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
