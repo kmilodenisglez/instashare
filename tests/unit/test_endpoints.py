@@ -1,9 +1,18 @@
 import io
 import uuid
+from unittest.mock import patch
 
+import pytest
 from fastapi.testclient import TestClient
 from api.main import app
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+
+# This initializes the in-memory cache (not Redis) for tests only.
+@pytest.fixture(autouse=True, scope="session")
+def init_cache():
+    FastAPICache.init(InMemoryBackend(), prefix="test-cache")
 
 client = TestClient(app)
 
@@ -60,6 +69,28 @@ def test_rename_file_not_found(monkeypatch):
     cookies = login_and_get_cookies()
     response = client.patch(f"{API_PREFIX}/files/9999/rename", params={"new_name": "fail.txt"}, cookies=cookies)
     assert response.status_code == 404
+
+
+def test_list_files(monkeypatch):
+    # register_user(unique_email=False)
+    cookies = login_and_get_cookies()
+    print("cookies: ", cookies)
+    # Mock para upload y subir un archivo primero
+    with patch("api.external_services.pinata.upload_file_to_ipfs") as mock_upload:
+        mock_upload.return_value = "QmFakeHashList"
+        file_content = io.BytesIO(b"file for list")
+        client.post(
+            f"{API_PREFIX}/files/upload",
+            files={"uploaded_file": ("list.txt", file_content)},
+            cookies=cookies,
+        )
+
+    response = client.get(f"{API_PREFIX}/files", cookies=cookies)
+    assert response.status_code == 200
+    files = response.json()
+    assert isinstance(files, list)
+    assert any(f["filename"] == "list.txt" for f in files)
+
 
 # def test_download_file(monkeypatch):
 #     register_user()
