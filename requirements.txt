@@ -1,4 +1,5 @@
 fastapi[standard]
+fastapi-cache2
 uvicorn[standard]
 types-Authlib
 authlib
@@ -24,4 +25,5 @@ black
 isort
 flake8
 mypy
+pytest-cov
 
