@@ -37,6 +37,8 @@ async def upload_file(
 ):
     OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./output")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if not uploaded_file.filename:
+        raise HTTPException(400, "Filename is required")
     file_path = os.path.join(OUTPUT_DIR, uploaded_file.filename)
     # Save uploaded file to disk
     with open(file_path, "wb") as buffer:
@@ -73,7 +75,7 @@ async def list_files(
     return files
 
 
-@router.patch("/files/{file_id}", response_model=FileOut)
+@router.patch("/files/{file_id}/rename", response_model=FileOut)
 async def rename_file(
     file_id: int,
     new_name: str,
@@ -88,7 +90,7 @@ async def rename_file(
     if not file:
         raise HTTPException(404, "File not found")
     file.filename = new_name
-    file.updated_at = datetime.utcnow()
+    file.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(file)
     return file
