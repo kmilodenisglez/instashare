@@ -10,5 +10,6 @@ __all__ = [
     # Export specific functions based on what you have in each file
     # For example:
     # "format_file_size",
-    hash_password, verify_password
+    "hash_password",
+    "verify_password",
 ]
