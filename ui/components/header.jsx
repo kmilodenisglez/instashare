@@ -2,9 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import instashareLogo from 'public/instashare-logo.svg';
 import githubLogo from 'public/images/github-mark-white.svg';
+import AuthButton from './AuthButton';
 
 const navItems = [
-    // { linkText: 'Home', href: '/' },
+    { linkText: 'Home', href: '/' },
 ];
 
 export function Header() {
@@ -32,7 +33,7 @@ export function Header() {
             >
                 <Image src={githubLogo} alt="GitHub logo" className="w-7" />
             </Link>
-            {/*<AuthButton />*/}
+            <AuthButton />
         </nav>
     );
 }
