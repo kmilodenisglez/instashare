@@ -91,6 +91,16 @@ def test_list_files(monkeypatch):
     assert isinstance(files, list)
     assert any(f["filename"] == "list.txt" for f in files)
 
+def test_download_file_not_found():
+    cookies = login_and_get_cookies()
+    response = client.get(f"{API_PREFIX}/files/9999/download", cookies=cookies)
+    assert response.status_code == 404
+
+def test_download_zip_file_not_found():
+    cookies = login_and_get_cookies()
+    response = client.get(f"{API_PREFIX}/files/9999/download_zip", cookies=cookies)
+    assert response.status_code == 404
+
 
 # def test_download_file(monkeypatch):
 #     register_user()
