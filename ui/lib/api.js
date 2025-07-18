@@ -129,7 +129,14 @@ export const api = {
     uploadFile: (formData) => apiClient.post(API_CONFIG.ENDPOINTS.FILES_UPLOAD, formData),
     downloadFile: (fileId) => buildApiUrl(API_CONFIG.ENDPOINTS.FILES_DOWNLOAD, { file_id: fileId }),
     downloadZip: (fileId) => buildApiUrl(API_CONFIG.ENDPOINTS.FILES_DOWNLOAD_ZIP, { file_id: fileId }),
-    renameFile: (fileId, newName) => apiClient.put(API_CONFIG.ENDPOINTS.FILES_RENAME, { new_name: newName }, { params: { file_id: fileId } }),
+    renameFile: (fileId, newName) =>
+        apiClient.request(
+            API_CONFIG.ENDPOINTS.FILES_RENAME.replace('{file_id}', fileId),
+            {
+                method: 'PATCH',
+                params: { new_name: newName }
+            }
+        ),
     getFileInfo: (fileId) => apiClient.get(API_CONFIG.ENDPOINTS.FILES_INFO, { file_id: fileId }),
     
     // Health
