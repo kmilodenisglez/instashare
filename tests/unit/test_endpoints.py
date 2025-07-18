@@ -1,21 +1,21 @@
 import io
 import uuid
-from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from api.main import app
 
-# from tests.unit.test_utils import login_and_get_cookies
 
 client = TestClient(app)
 
-# Helper para login y obtener cookies de sesión
+API_PREFIX = "/api/v1"
+
+# Helper for login and getting session cookies
 def login_and_get_cookies(email="test@example.com", password="T3stp@ssw0rd"):
     resp = client.post("/auth/login", data={"email": email, "password": password})
     assert resp.status_code == 200
     return resp.cookies
 
-# Helper para registrar un usuario
+# Helper to register a user
 def register_user(unique_email=True, password="T3stp@ssw0rd", name="Test User"):
     email = f"testuser_{uuid.uuid4()}@example.com"
     if not unique_email:
@@ -50,7 +50,7 @@ def test_upload_file_unauthenticated():
     logout()
     file_content = io.BytesIO(b"no auth")
     response = client.post(
-        "/api/v1/files/upload",
+        f"{API_PREFIX}/files/upload",
         files={"uploaded_file": ("fail.txt", file_content)},
     )
     assert response.status_code == 401
@@ -58,7 +58,7 @@ def test_upload_file_unauthenticated():
 def test_rename_file_not_found(monkeypatch):
     register_user()
     cookies = login_and_get_cookies()
-    response = client.patch("/files/9999/rename", params={"new_name": "fail.txt"}, cookies=cookies)
+    response = client.patch(f"{API_PREFIX}/files/9999/rename", params={"new_name": "fail.txt"}, cookies=cookies)
     assert response.status_code == 404
 
 # def test_download_file(monkeypatch):
