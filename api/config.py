@@ -43,6 +43,10 @@ class Settings(BaseSettings):
         description="IPFS gateway URL for accessing uploaded files. Recommended to use own dedicated gateway to avoid congestion and rate limiting. Example: 'https://ipfs.my-dao.org/ipfs' (Note: won't work for third-party files)",
     )
 
+    REDIS_URL: Optional[str] = Field(
+        default="redis://localhost:6379", description="Redis URL for caching and Celery"
+    )
+
     class Config:
         env_file = ".env"
         case_sensitive = True
