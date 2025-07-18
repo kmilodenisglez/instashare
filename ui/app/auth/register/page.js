@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '../../../lib/api';
+import { useAuth } from '../../../components/AuthContext';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -16,6 +16,8 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
+    const { register } = useAuth();
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -27,28 +29,28 @@ export default function RegisterPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
-
+      
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            setLoading(false);
-            return;
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
         }
-
-        if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
-            setLoading(false);
-            return;
+      
+        if (formData.password.length < 8) {
+          setError('Password must be at least 8 characters');
+          setLoading(false);
+          return;
         }
-
-        try {
-            await api.register(formData.email, formData.password, formData.name);
-            router.push('/');
-        } catch (error) {
-            setError('Registration failed. Email may already be in use.');
-        } finally {
-            setLoading(false);
+      
+        const result = await register(formData.email, formData.password, formData.name);
+        console.log("handleSubmit result: ", result)
+        if (result.success) {
+          router.push('/');
+        } else {
+          setError(result.error);
         }
-    };
+        setLoading(false);
+      };
 
     const handleGoogleLogin = () => {
         const redirectUri = encodeURIComponent(window.location.origin);
@@ -101,7 +103,7 @@ export default function RegisterPage() {
                                 value={formData.password}
                                 onChange={handleChange}
                                 className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Password (min 6 characters)"
+                                placeholder="Password (min 8 characters)"
                             />
                         </div>
                         <div>
