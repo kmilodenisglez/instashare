@@ -36,7 +36,10 @@ app.add_middleware(
 # CORS for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://instashare-qba.netlify.app", ],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://instashare-qba.netlify.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
