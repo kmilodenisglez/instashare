@@ -1,6 +1,6 @@
 [build]
   publish = ".next"
-  command = "npm run build"
+  command = "npm run build && npm run export"
 
 [build.environment]
   NODE_VERSION = "22.14.0"
