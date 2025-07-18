@@ -31,11 +31,17 @@ export const API_CONFIG = {
 // Helper function to build API URLs
 export const buildApiUrl = (endpoint, params = {}) => {
     let url = `${API_CONFIG.BASE_URL}${endpoint}`;
-    
-    // Replace path parameters
+    // Replace parameters in the route
     Object.entries(params).forEach(([key, value]) => {
         url = url.replace(`{${key}}`, encodeURIComponent(value));
     });
-    
+    // Add the remaining parameters as query strings
+    const queryParams = Object.entries(params)
+        .filter(([key]) => !endpoint.includes(`{${key}}`))
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+    if (queryParams) {
+        url += (url.includes('?') ? '&' : '?') + queryParams;
+    }
     return url;
 };
