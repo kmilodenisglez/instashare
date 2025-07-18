@@ -104,7 +104,6 @@ async def rename_file(
 
 
 @router.get("/files/{file_id}", response_model=FileOut)
-@cache(expire=30)
 async def get_file(
     file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
@@ -119,7 +118,6 @@ async def get_file(
 
 
 @router.get("/files/{file_id}/download")
-@cache(expire=120)
 async def download_file(
     file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
