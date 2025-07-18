@@ -168,6 +168,11 @@ pytest tests/integration/
 pytest tests/e2e/
 ```
 
+### 4. Run tests with coverage
+```bash
+PYTHONPATH=. pytest --cov=api --cov-report=term-missing --cov-fail-under=85
+```
+
 ---
 
 ## Monitoring Celery Tasks
