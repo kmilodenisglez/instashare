@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     formData.append('email', email);
     formData.append('password', password);
     try {
-      const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGIN, formData);
+      const res = await apiClient.post(API_CONFIG.ENDPOINTS.AUTH_LOGIN_LOCAL, formData);
       if (res.ok) {
         await fetchUser();
         return true;
