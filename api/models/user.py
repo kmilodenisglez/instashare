@@ -1,23 +1,31 @@
-from datetime import UTC, datetime
+from __future__ import annotations
 
-from sqlalchemy import Column, DateTime, Integer, String
-from sqlalchemy.orm import relationship
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlalchemy import DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
+
+if TYPE_CHECKING:
+    from .file import File  # solo para anotación de tipos
 
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, nullable=True)
-    hashed_password = Column(String, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
-    updated_at = Column(
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
+    name: Mapped[Optional[str]] = mapped_column(nullable=True)
+    hashed_password: Mapped[Optional[str]] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
     )
 
-    # Use string instead of direct class
-    files = relationship("File", back_populates="user")
+    files: Mapped[List[File]] = relationship("File", back_populates="user")
