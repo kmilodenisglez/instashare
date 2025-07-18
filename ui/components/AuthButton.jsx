@@ -1,53 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api } from "../lib/api";
+import { useAuth } from './AuthContext';
 
 export default function AuthButton() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    // Fetch user info on mount
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-                    credentials: 'include',
-                });
-                const data = await res.json();
-                if (data.authenticated) {
-                    setUser(data.user);
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error('Failed to fetch user:', error);
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchUser();
-    }, []);
+    const { user, loading, logout } = useAuth();
 
     const handleGoogleLogin = () => {
         const redirectUri = encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000/');
         window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?redirect_uri=${redirectUri}`;
-    };
-
-    const handleLogout = async () => {
-        setLoading(true);
-        try {
-            await api.logout();
-            setUser(null);
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Failed to logout:', error);
-            alert('Logout failed. Please try again.');
-        } finally {
-            setLoading(false);
-        }
     };
 
     if (loading) return (
@@ -61,7 +22,7 @@ export default function AuthButton() {
             <span style={{ fontWeight: 500 }}>
                 Welcome, {user.name || user.email}
             </span>
-            <button className="auth-btn" onClick={handleLogout}>
+            <button className="auth-btn" onClick={logout}>
                 Logout
             </button>
             <style jsx>{`
