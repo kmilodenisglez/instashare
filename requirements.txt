@@ -1,5 +1,6 @@
 fastapi[standard]
 uvicorn[standard]
+types-Authlib
 authlib
 httpx
 python-multipart
@@ -9,7 +10,8 @@ asyncpg
 pydantic
 pydantic_settings
 passlib[bcrypt]
-bcrypt==3.2.0 
+bcrypt==3.2.0
+types-passlib
 python-jose[cryptography]
 celery[redis]
 redis
@@ -17,7 +19,9 @@ starlette
 python-dotenv
 itsdangerous
 requests
+types-requests
 black
 isort
 flake8
 mypy
+
