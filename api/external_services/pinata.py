@@ -6,13 +6,7 @@ import requests
 PINATA_FILE_API_ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS"
 
 # Read credentials from environment variables
-PINATA_API_KEY = os.getenv("PINATA_API_KEY")
-PINATA_API_SECRET = os.getenv("PINATA_API_SECRET")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./output")
-# Debug: Check if credentials are loaded
-print(f"Pinata API Key loaded: {'Yes' if PINATA_API_KEY else 'No'}")
-if PINATA_API_KEY:
-    print(f"API Key starts with: {PINATA_API_KEY[:8]}...")
 
 
 def upload_file_to_ipfs(file_path=None):
@@ -27,6 +21,9 @@ def upload_file_to_ipfs(file_path=None):
 
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
+
+    PINATA_API_KEY = os.getenv("PINATA_API_KEY")
+    PINATA_API_SECRET = os.getenv("PINATA_API_SECRET")
 
     if not PINATA_API_KEY or not PINATA_API_SECRET:
         raise Exception(
