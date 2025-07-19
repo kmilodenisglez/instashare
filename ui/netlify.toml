@@ -5,6 +5,12 @@
 [build.environment]
   NODE_VERSION = "20.17.0"
 
+[functions]
+directory = ".netlify/functions"
+
+[plugins]
+package = "@netlify/next"
+
 [context.production.environment]
   NEXT_PUBLIC_API_URL = "https://web-production-23301.up.railway.app"
 
@@ -14,4 +20,7 @@
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+
+
+
