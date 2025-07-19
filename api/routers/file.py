@@ -1,7 +1,7 @@
 import os
 import shutil
 from datetime import UTC, datetime
-from typing import List
+from typing import List, AsyncGenerator
 
 import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
@@ -131,7 +131,7 @@ async def get_file(
 
 @router.get("/files/{file_id}/download")
 async def download_file(
-    file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
+        file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
     file = (
         db.query(FileModel)
@@ -140,12 +140,18 @@ async def download_file(
     )
     if not file or not file.ipfs_hash:
         raise HTTPException(404, "File not found or not uploaded to IPFS")
+
     ipfs_url = f"https://gateway.pinata.cloud/ipfs/{file.ipfs_hash}"
     async with httpx.AsyncClient() as client:
         response = await client.get(ipfs_url, timeout=60.0)
         response.raise_for_status()
+
+        async def file_stream() -> AsyncGenerator[bytes, None]:
+            async for chunk in response.aiter_bytes():
+                yield chunk
+
         return StreamingResponse(
-            response.aiter_bytes(),
+            file_stream(),
             media_type="application/octet-stream",
             headers={"Content-Disposition": f'attachment; filename="{file.filename}"'},
         )
