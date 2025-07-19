@@ -10,7 +10,7 @@ export const API_CONFIG = {
         AUTH_USER: '/auth/me',
         
         // File operations
-        FILES_LIST: '/api/v1/files/',
+        FILES_LIST: '/api/v1/files',
         FILES_UPLOAD: '/api/v1/files/upload',
         FILES_DOWNLOAD: '/api/v1/files/{file_id}/download',
         FILES_DOWNLOAD_ZIP: '/api/v1/files/{file_id}/download_zip',
