@@ -196,9 +196,9 @@ PYTHONPATH=. pytest
 
 ### 3. Run Only a Specific Type of Test
 ```bash
-pytest tests/unit/
-pytest tests/integration/
-pytest tests/e2e/
+PYTHONPATH=. pytest tests/unit/
+PYTHONPATH=. pytest tests/integration/
+PYTHONPATH=. pytest tests/e2e/
 ```
 
 ### 4. Run tests with coverage
