@@ -4,14 +4,14 @@
 import os
 from contextlib import asynccontextmanager
 
+import redis.asyncio as redis
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-import redis.asyncio as redis
-from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from fastapi.responses import JSONResponse
 
 from api.database import create_tables
 from api.routers import auth_router, file_router
@@ -61,13 +61,14 @@ app.add_middleware(
 app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"),
-    same_site="none", # ← 🔥 This allows cross-domain cookies
-    https_only=True   # ← 🔥 This forces HTTPS (required for cross-domain use)
+    same_site="none",  # ← 🔥 This allows cross-domain cookies
+    https_only=True,  # ← 🔥 This forces HTTPS (required for cross-domain use)
 )
 
 # Routers
 app.include_router(auth_router, prefix="/auth")
 app.include_router(file_router, prefix="/api/v1")
+
 
 # Health check / root endpoint
 @app.get("/api/v1", response_class=JSONResponse)

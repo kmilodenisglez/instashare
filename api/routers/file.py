@@ -1,7 +1,7 @@
 import os
 import shutil
 from datetime import UTC, datetime
-from typing import List, AsyncGenerator
+from typing import AsyncGenerator, List
 
 import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
@@ -49,10 +49,12 @@ async def upload_file(
     try:
         file_size = os.path.getsize(file_path)
     except Exception as e:
-        # raise HTTPException(status_code=500, detail=f"Could not determine file size: {str(e)}")
+        # raise HTTPException(status_code=500, detail=f"Could
+        # not determine file size: {str(e)}")
         file_size = None
         # Opcional: loguear el error
         import logging
+
         logging.error(f"Could not determine file size for {file_path}: {e}")
 
     try:
@@ -60,7 +62,9 @@ async def upload_file(
         ipfs_hash = upload_file_to_ipfs(file_path)
     except Exception as e:
         # Returns a 500 error with the exception message
-        raise HTTPException(status_code=500, detail=f"Failed to upload to Pinata: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to upload to Pinata: {str(e)}"
+        )
 
     # Optionally, remove the file after upload
     try:
@@ -131,7 +135,7 @@ async def get_file(
 
 @router.get("/files/{file_id}/download")
 async def download_file(
-        file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
+    file_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ):
     file = (
         db.query(FileModel)

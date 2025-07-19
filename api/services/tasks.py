@@ -3,8 +3,6 @@ import os
 import tempfile
 import zipfile
 
-import httpx
-
 from api.database import SessionLocal
 from api.external_services import upload_file_to_ipfs
 from api.models import File as FileModel

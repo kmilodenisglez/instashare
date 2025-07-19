@@ -27,7 +27,8 @@ def upload_file_to_ipfs(file_path=None):
 
     if not PINATA_API_KEY or not PINATA_API_SECRET:
         raise Exception(
-            "Error: Pinata IPFS API credentials not found, please check your environment variables"
+            "Error: Pinata IPFS API credentials not found, please check \
+            your environment variables"
         )
 
     headers = {
