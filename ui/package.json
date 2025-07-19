@@ -10,7 +10,6 @@
     },
     "dependencies": {
         "@netlify/blobs": "^8.2.0",
-        "@netlify/next": "^1.4.9",
         "blobshape": "^1.0.0",
         "bright": "^0.8.5",
         "markdown-to-jsx": "^7.4.5",
@@ -20,6 +19,7 @@
         "unique-names-generator": "^4.7.1"
     },
     "devDependencies": {
+        "@netlify/plugin-nextjs": "^5.11.6",
         "@tailwindcss/postcss": "^4.0.15",
         "eslint": "8.57.1",
         "eslint-config-next": "15.3.5",
