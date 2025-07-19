@@ -23,15 +23,15 @@ services:
     depends_on:
       - redis
 
-  beat:
-    build: .
-    command: celery -A api.services.celery_app beat --loglevel=info --concurrency=1
-    volumes:
-      - .:/home/appuser
-    env_file:
-      - .env
-    depends_on:
-      - redis
+  # beat:
+  #   build: .
+  #   command: celery -A api.services.celery_app beat --loglevel=info --concurrency=1
+  #   volumes:
+  #     - .:/home/appuser
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - redis
 
   redis:
     image: redis:alpine
@@ -39,6 +39,17 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  frontend:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://app:8000
+    depends_on:
+      - app
 
 volumes:
   redis_data: 
