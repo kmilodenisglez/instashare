@@ -44,6 +44,17 @@ async def upload_file(
     # Save uploaded file to disk
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(uploaded_file.file, buffer)
+
+    # Try to calculate the file size
+    try:
+        file_size = os.path.getsize(file_path)
+    except Exception as e:
+        # raise HTTPException(status_code=500, detail=f"Could not determine file size: {str(e)}")
+        file_size = None
+        # Opcional: loguear el error
+        import logging
+        logging.error(f"Could not determine file size for {file_path}: {e}")
+
     try:
         # Upload file to Pinata
         ipfs_hash = upload_file_to_ipfs(file_path)
@@ -56,10 +67,11 @@ async def upload_file(
         os.remove(file_path)
     except Exception:
         pass
+
     file_record = FileModel(
         user_id=user.id,
         filename=uploaded_file.filename,
-        size=os.path.getsize(file_path) if os.path.exists(file_path) else None,
+        size=file_size,
         status="pending",
         ipfs_hash=ipfs_hash,
         created_at=datetime.now(UTC),
