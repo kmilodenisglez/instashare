@@ -9,7 +9,7 @@
 directory = ".netlify/functions"
 
 [[plugins]]
-package = "@netlify/next"
+package = "@netlify/plugin-nextjs"
 
 [context.production.environment]
   NEXT_PUBLIC_API_URL = "https://web-production-23301.up.railway.app"
