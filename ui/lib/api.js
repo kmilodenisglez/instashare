@@ -9,12 +9,17 @@ class ApiClient {
     }
 
     async request(endpoint, options = {}) {
+        // Ensure options is an object
+        if (!options || typeof options !== 'object') {
+            options = {};
+        }
+        
         const url = buildApiUrl(endpoint, options.params);
         const config = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                ...options.headers,
+                ...(options.headers || {}),
             },
             credentials: 'include', // Include cookies for session
             ...options,
@@ -79,7 +84,7 @@ class ApiClient {
         return this.request(endpoint, {
             method: 'POST',
             body: data instanceof FormData ? data : JSON.stringify(data),
-            ...options,
+            ...(options || {}),
         });
     }
 
@@ -87,14 +92,14 @@ class ApiClient {
         return this.request(endpoint, {
             method: 'PUT',
             body: JSON.stringify(data),
-            ...options,
+            ...(options || {}),
         });
     }
 
     async delete(endpoint, options = {}) {
         return this.request(endpoint, {
             method: 'DELETE',
-            ...options,
+            ...(options || {}),
         });
     }
 }

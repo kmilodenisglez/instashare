@@ -31,6 +31,12 @@ export const API_CONFIG = {
 // Helper function to build API URLs
 export const buildApiUrl = (endpoint, params = {}) => {
     let url = `${API_CONFIG.BASE_URL}${endpoint}`;
+    
+    // Ensure params is an object
+    if (!params || typeof params !== 'object') {
+        params = {};
+    }
+    
     // Replace parameters in the route
     Object.entries(params).forEach(([key, value]) => {
         url = url.replace(`{${key}}`, encodeURIComponent(value));
