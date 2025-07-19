@@ -62,7 +62,7 @@ app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("SESSION_SECRET_KEY", "default_secret_key"),
     same_site="none",  # ← 🔥 This allows cross-domain cookies
-    https_only=True,  # ← 🔥 This forces HTTPS (required for cross-domain use)
+    # https_only=True,  # ← 🔥 This forces HTTPS (required for cross-domain use)
 )
 
 # Routers
