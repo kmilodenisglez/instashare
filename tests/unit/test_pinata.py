@@ -64,10 +64,15 @@ def test_process_file_zip_file_not_found():
         process_file_zip.__wrapped__(None, 999999)
 
 def test_download_file_http_error(monkeypatch):
-    async def mock_get(*args, **kwargs):
-        class MockResponse:
-            def raise_for_status(self): raise Exception("HTTP error")
-        return MockResponse()
+    from api.services.files import download_file
+    import httpx, asyncio
+    class MockResponse:
+        def raise_for_status(self):
+            req = httpx.Request("GET", "http://fake-url")
+            resp = httpx.Response(500, request=req)
+            raise httpx.HTTPStatusError("fail", request=req, response=resp)
+        async def aiter_bytes(self): yield b""
+    async def mock_get(*args, **kwargs): return MockResponse()
     monkeypatch.setattr("httpx.AsyncClient.get", mock_get)
-    with pytest.raises(Exception):
+    with pytest.raises(httpx.HTTPStatusError):
         asyncio.run(download_file("http://fake-url"))
