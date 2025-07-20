@@ -151,3 +151,56 @@ def test_register_invalid_email():
 def test_logout_without_session():
     response = client.post("/auth/logout")
     assert response.status_code == 200  # O el código que uses para logout sin sesión
+
+def test_register_existing_email_error():
+    user_data = generate_user_data()
+    # Primer registro
+    response = client.post("/auth/register", data=user_data)
+    assert response.status_code == 200
+    # Segundo registro con el mismo email
+    response = client.post("/auth/register", data=user_data)
+    assert response.status_code == 400
+    assert "Email already registered" in response.text
+
+def test_login_invalid_credentials():
+    user_data = generate_user_data()
+    # No registramos el usuario
+    response = client.post("/auth/login", data={
+        "email": user_data["email"],
+        "password": user_data["password"]
+    })
+    assert response.status_code == 401
+    assert "Invalid credentials" in response.text
+
+def test_logout_clears_session():
+    user_data = generate_user_data()
+    client.post("/auth/register", data=user_data)
+    login_resp = client.post("/auth/login", data={
+        "email": user_data["email"],
+        "password": user_data["password"]
+    })
+    cookies = login_resp.cookies
+    # Logout
+    response = client.post("/auth/logout", cookies=cookies)
+    assert response.status_code == 200
+    # Remove session cookie to simulate a new session
+    client.cookies.clear()
+    response = client.get("/auth/me")
+    assert response.json()["authenticated"] is False
+
+def test_me_no_session():
+    from fastapi.testclient import TestClient
+    unauth_client = TestClient(app)
+    response = unauth_client.get("/auth/me")
+    assert response.status_code == 200
+    assert response.json()["authenticated"] is False
+
+def test_oauth_callback_missing_userinfo(monkeypatch):
+    # Simula que authorize_access_token retorna un token sin userinfo
+    class DummyOAuth:
+        async def authorize_access_token(self, request):
+            return {}
+    monkeypatch.setattr("api.routers.auth.oauth.google", DummyOAuth())
+    response = client.get("/auth/callback/google")
+    assert response.status_code == 400
+    assert "Could not get userinfo" in response.text
