@@ -13,7 +13,7 @@ import celery
 
 celery.current_app.conf.task_always_eager = True
 
-def login_and_get_cookies(email="test@example.com", password="testpassword"):
+def login_and_get_cookies(email="test@example.com", password="T3stp@ssw0rd"):
     """
     Logs in and returns session cookies for authenticated requests.
     Adapt the payload and endpoint to your actual login flow.
@@ -33,7 +33,7 @@ def authenticated_client():
         # Simulate login
         resp = client.post(
             "/auth/test-login",
-            json={"email": "test@example.com", "password": "testpassword"},
+            json={"email": "test@example.com", "password": "T3stp@ssw0rd"},
         )
         assert resp.status_code == 200
         yield client
