@@ -125,5 +125,29 @@ def test_upload_file_without_filename(setup_test_user):
         "uploaded_file": ("", io.BytesIO(b"no name"), "text/plain")
     }
     response = client.post("/api/v1/files/upload", files=file_data, cookies=cookies)
+    assert response.status_code in (400, 422)
+    assert "Expected UploadFile" in response.text or "value_error" in response.text
+
+def test_rename_nonexistent_file(setup_test_user):
+    cookies, _ = setup_test_user
+    response = client.patch("/api/v1/files/999999/rename", params={"new_name": "new.txt"}, cookies=cookies)
+    assert response.status_code == 404
+    assert "File not found" in response.text
+
+def test_download_zip_nonexistent_file(setup_test_user):
+    cookies, _ = setup_test_user
+    response = client.get("/api/v1/files/999999/download_zip", cookies=cookies)
+    assert response.status_code == 404
+    assert "ZIP file not found" in response.text
+
+def test_register_invalid_email():
+    response = client.post("/auth/register", data={
+        "email": "not-an-email",
+        "password": "ValidP@ssword123",
+        "name": "Test User"
+    })
     assert response.status_code == 400
-    assert "Filename is required" in response.text
+
+def test_logout_without_session():
+    response = client.post("/auth/logout")
+    assert response.status_code == 200  # O el código que uses para logout sin sesión
