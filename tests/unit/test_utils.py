@@ -92,3 +92,8 @@ def test_upload():
     else:
         print("Error:", response.status_code, response.text)
     assert response.status_code == 200
+
+
+def test_validate_email_invalid():
+    from api.utils.validators import validate_email
+    assert not validate_email("not-an-email")
