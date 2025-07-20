@@ -32,3 +32,8 @@ def validate_password(password: str) -> None:
             status_code=400,
             detail="Password must contain at least one special character",
         )
+
+
+def validate_email(email: str) -> bool:
+    # Simple regex for email validation
+    return bool(re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email))
