@@ -6,6 +6,11 @@ import pytest
 from api.external_services.pinata import upload_file_to_ipfs
 from tests.integration.test_auth_and_files_improved import register_user
 
+import pytest
+from api.services.tasks import process_file_zip
+from api.services.files import download_file
+import asyncio
+
 client = TestClient(app)
 
 API_PREFIX = "/api/v1"
@@ -52,3 +57,17 @@ def test_upload_file_to_ipfs_requests_error(monkeypatch, tmp_path):
         mock_post.side_effect = requests.exceptions.RequestException("fail")
         with pytest.raises(requests.exceptions.RequestException):
             upload_file_to_ipfs(str(test_file))
+
+def test_process_file_zip_file_not_found():
+    from api.services.tasks import process_file_zip
+    with pytest.raises(Exception):
+        process_file_zip.__wrapped__(None, 999999)
+
+def test_download_file_http_error(monkeypatch):
+    async def mock_get(*args, **kwargs):
+        class MockResponse:
+            def raise_for_status(self): raise Exception("HTTP error")
+        return MockResponse()
+    monkeypatch.setattr("httpx.AsyncClient.get", mock_get)
+    with pytest.raises(Exception):
+        asyncio.run(download_file("http://fake-url"))
