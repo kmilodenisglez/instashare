@@ -6,6 +6,7 @@ from starlette.testclient import TestClient
 
 from api.main import app
 from api.services.files import process_and_upload_zip
+from api.utils import validate_email
 
 BASE_URL = "http://localhost:8000"
 
