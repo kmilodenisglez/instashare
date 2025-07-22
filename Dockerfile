@@ -16,19 +16,16 @@ RUN apt-get update && apt-get install -y build-essential gcc libpq-dev && rm -rf
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy startup script
-COPY start.sh ./
-RUN chmod +x start.sh
-
 # Copy the rest of the code
 COPY . .
 
-# Set permissions
+# Create output directory and set permissions
+RUN mkdir -p /home/appuser/output
 RUN chown -R appuser:appuser /home/appuser
 USER appuser
 
 # Expose FastAPI port
 EXPOSE 8000
 
-# Use the startup script
-CMD ["./start.sh"]
+# Default command (can be overridden in docker-compose)
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

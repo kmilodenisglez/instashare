@@ -6,6 +6,7 @@ services:
     command: sh -c 'uvicorn api.main:app --host 0.0.0.0 --port 8000'
     volumes:
       - .:/home/appuser
+      - shared_output:/home/appuser/output
     env_file:
       - .env
     ports:
@@ -18,20 +19,12 @@ services:
     command: celery -A api.services.celery_app worker --loglevel=info --concurrency=1
     volumes:
       - .:/home/appuser
+      - shared_output:/home/appuser/output
     env_file:
       - .env
     depends_on:
       - redis
-
-  # beat:
-  #   build: .
-  #   command: celery -A api.services.celery_app beat --loglevel=info --concurrency=1
-  #   volumes:
-  #     - .:/home/appuser
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - redis
+      - app
 
   redis:
     image: redis:alpine
@@ -52,4 +45,5 @@ services:
       - app
 
 volumes:
-  redis_data: 
+  redis_data:
+  shared_output:

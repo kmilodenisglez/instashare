@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     # Database configuration
     DATABASE_URL: str = Field(
-        default="sqlite:///./output/instashare.db",
+        default="sqlite:////home/appuser/output/instashare.db",
         description="Database connection URL",
     )
 
